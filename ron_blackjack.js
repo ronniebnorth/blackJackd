@@ -108,14 +108,13 @@ function shouldHit(players, player){
     return player.points < 17 ? true : false;
 }
 
-
-function clone(arr){
-    return JSON.parse(JSON.stringify(arr));
-}
-
 function cargs(args){
     for(var i = 0; i < args.length; i++){
         args[i] = clone(args[i]);
     }
     return args
+}
+
+function clone(arr){
+    return JSON.parse(JSON.stringify(arr));
 }
