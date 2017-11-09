@@ -1,5 +1,5 @@
 const numPlayers = 3;
-const numRounds = 100;
+const numRounds = 5;
 const deck = [
     1,2,3,4,5,6,7,8,9,10,10,10,10,
     1,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -17,7 +17,7 @@ while(roundsPlayed < numRounds){
 }
 
 function results(players){
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     players.map(function(player, index){
         var score = player.points;
         console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
@@ -25,7 +25,7 @@ function results(players){
 }
 
 function play(game){
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player){
@@ -38,7 +38,7 @@ function play(game){
 }
 
 function deal(deck, players){
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     var i = 0;
     while(i < 2){
         players = players.map(function(player){ 
@@ -67,7 +67,7 @@ function players(numPlayers){
 }
 
 function shuffle(array) {
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     var currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -80,7 +80,7 @@ function shuffle(array) {
 }
 
 function hit(deck, players, player){
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     while(player.points < 21 && shouldHit(players, player)){
         player.points += deck.pop();
         player = aces(player);
@@ -89,7 +89,7 @@ function hit(deck, players, player){
 }
 
 function aces(player){
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     if(player.points > 21){
         if(player.acesToUse > 0){
             player.points -= 10;
@@ -100,15 +100,15 @@ function aces(player){
 }
 
 function shouldHit(players, player){
-    arguments = cargs(arguments);
+    arguments = clargs(arguments);
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
-    // todo: add basic strategy 
+    // for now.. 
     return player.points < 17 ? true : false;
 }
 
-function cargs(args){
+function clargs(args){
     for(var i = 0; i < args.length; i++){
         args[i] = clone(args[i]);
     }
