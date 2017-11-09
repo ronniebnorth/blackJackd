@@ -10,13 +10,13 @@ const deck = [
 var roundsPlayed = 0;
 
 while(roundsPlayed < numRounds){
-    var thisRound = roundsPlayed + 1;
-    console.log('------------ ROUND ' + thisRound);
-    results(play(deal(shuffle(deck), players(numPlayers))));
+    var roundNum = roundsPlayed + 1;
+    console.log('------------ ROUND ' + roundNum);
+    displayResults(play(deal(shuffle(deck), getPlayers(numPlayers))));
     roundsPlayed++;
 }
 
-function results(players){
+function displayResults(players){
     arguments = clargs(arguments);
     players.map(function(player, index){
         var score = player.points;
@@ -56,27 +56,27 @@ function deal(deck, players){
     return [deck, players];
 }
 
-function players(numPlayers){
-    var p = [{type:'dealer',points:0,acesToUse:0}];
+function getPlayers(numPlayers){
+    var players = [{type:'dealer',points:0,acesToUse:0}];
     var i = 0;
     while(i < numPlayers){
-        p.push({type:'player',points:0,acesToUse:0});
+        players.push({type:'player',points:0,acesToUse:0});
         i++;
     }
-    return p;
+    return players;
 }
 
-function shuffle(array) {
+function shuffle(arr) {
     arguments = clargs(arguments);
-    var currentIndex = array.length, temporaryValue, randomIndex;
-    while (0 !== currentIndex) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
+    var curInd = arr.length, tempVal, randInd;
+    while (0 !== curInd) {
+        randInd = Math.floor(Math.random() * curInd);
+        curInd -= 1;
+        tempVal = arr[curInd];
+        arr[curInd] = arr[randInd];
+        arr[randInd] = tempVal;
     }
-    return array;
+    return arr;
 }
 
 function hit(deck, players, player){
@@ -115,6 +115,6 @@ function clargs(args){
     return args
 }
 
-function clone(arr){
-    return JSON.parse(JSON.stringify(arr));
+function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
 }
