@@ -1,5 +1,5 @@
-const numPlayers = 1;
-const numRounds = 1;
+const numPlayers = 3;
+const numRounds = 100;
 const deck = [
     1,2,3,4,5,6,7,8,9,10,10,10,10,
     1,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -17,7 +17,7 @@ while(roundsPlayed < numRounds){
 }
 
 function results(players){
-    arguments = clone(arguments);
+    arguments = cargs(arguments);
     players.map(function(player, index){
         var score = player.points;
         console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
@@ -25,7 +25,7 @@ function results(players){
 }
 
 function play(game){
-    arguments = clone(arguments);
+    arguments = cargs(arguments);
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player){
@@ -38,7 +38,7 @@ function play(game){
 }
 
 function deal(deck, players){
-    arguments = clone(arguments);
+    arguments = cargs(arguments);
     var i = 0;
     while(i < 2){
         players = players.map(function(player){ 
@@ -67,7 +67,7 @@ function players(numPlayers){
 }
 
 function shuffle(array) {
-    arguments = clone(arguments);
+    arguments = cargs(arguments);
     var currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -80,7 +80,7 @@ function shuffle(array) {
 }
 
 function hit(deck, players, player){
-    arguments = clone(arguments);
+    arguments = cargs(arguments);
     while(player.points < 21 && shouldHit(players, player)){
         player.points += deck.pop();
         player = aces(player);
@@ -89,7 +89,7 @@ function hit(deck, players, player){
 }
 
 function aces(player){
-    arguments = clone(arguments);
+    arguments = cargs(arguments);
     if(player.points > 21){
         if(player.acesToUse > 0){
             player.points -= 10;
@@ -100,8 +100,7 @@ function aces(player){
 }
 
 function shouldHit(players, player){
-    arguments = clone(arguments);
-
+    arguments = cargs(arguments);
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
@@ -112,4 +111,11 @@ function shouldHit(players, player){
 
 function clone(arr){
     return JSON.parse(JSON.stringify(arr));
+}
+
+function cargs(args){
+    for(var i = 0; i < args.length; i++){
+        args[i] = clone(args[i]);
+    }
+    return args
 }
