@@ -4,18 +4,16 @@ const deck = [1,2,3,4,5,6,7,8,9,10,10,10,10,
 			   1,2,3,4,5,6,7,8,9,10,10,10,10,
 			   1,2,3,4,5,6,7,8,9,10,10,10,10];
 const numPlayers = 3;
-const rounds = 100;
+const numRounds = 100;
 
+var roundsPlayed = 0;
 
-var played = 0;
-
-while(played < rounds){
-  var thisRound = played + 1;
+while(roundsPlayed < numRounds){
+  var thisRound = roundsPlayed + 1;
   console.log('------------ ROUND ' + thisRound);
   results(play(deal(shuffle(deck), players(numPlayers))));
-  played++;
+  roundsPlayed++;
 }
-
 
 function results(iplayers){
     var players = clone(iplayers);
@@ -23,7 +21,6 @@ function results(iplayers){
         console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
     });
 }
-
 
 function play(igame){
     var game = clone(igame);
@@ -33,13 +30,12 @@ function play(igame){
     players.map(function(player){
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
-        newPlayer = hitResults[1];
+        var newPlayer = hitResults[1];
         newPlayers.push(newPlayer);
     });
 	//console.log("PLAYTIME OVER ----------------- deck.length " + deck.length);
     return newPlayers;
 }
-
 
 function deal(ideck, iplayers){
     var deck = clone(ideck);
@@ -62,7 +58,6 @@ function deal(ideck, iplayers){
     return [deck, players];
 }
 
-
 function players(numPlayers){
     var p = [{type:'dealer',points:0,acesToUse:0}];
     var i = 0;
@@ -73,7 +68,6 @@ function players(numPlayers){
     return p;
 
 }
-
 
 function shuffle(iarray) {
     var array = clone(iarray);
@@ -89,7 +83,6 @@ function shuffle(iarray) {
     return array;
 }
 
-
 function hit(ideck, iplayers, iplayer){
     var deck = clone(ideck);
     var players = clone(iplayers);
@@ -100,7 +93,6 @@ function hit(ideck, iplayers, iplayer){
     }   
     return [deck, player];
 }
-
 
 function aces(iplayer){
     var player = clone(iplayer);
@@ -113,7 +105,6 @@ function aces(iplayer){
     return player;
 }
 
-
 function shouldHit(iplayers, iplayer){
     var players = clone(iplayers);
     var player = clone(iplayer);
@@ -124,8 +115,6 @@ function shouldHit(iplayers, iplayer){
     return player.points < 17 ? true : false;
 }
 
-
 function clone(arr){
   return JSON.parse(JSON.stringify(arr));
 }
-
