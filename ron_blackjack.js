@@ -83,20 +83,9 @@ function hit(deck, players, player){
     arguments = clargs(arguments);
     while(player.points < 21 && shouldHit(players, player)){
         player.points += deck.pop();
-        player = aces(player);
+        player = playAces(player);
     }   
     return [deck, player];
-}
-
-function aces(player){
-    arguments = clargs(arguments);
-    if(player.points > 21){
-        if(player.acesToUse > 0){
-            player.points -= 10;
-            player.acesToUse--;
-        }
-    }
-    return player;
 }
 
 function shouldHit(players, player){
@@ -106,6 +95,17 @@ function shouldHit(players, player){
     }
     // for now.. 
     return player.points < 17 ? true : false;
+}
+
+function playAces(player){
+    arguments = clargs(arguments);
+    if(player.points > 21){
+        if(player.acesToUse > 0){
+            player.points -= 10;
+            player.acesToUse--;
+        }
+    }
+    return player;
 }
 
 function clargs(args){
