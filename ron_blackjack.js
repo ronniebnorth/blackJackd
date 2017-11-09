@@ -1,23 +1,25 @@
-
-const deck = [1,2,3,4,5,6,7,8,9,10,10,10,10,
-			   1,2,3,4,5,6,7,8,9,10,10,10,10,
-			   1,2,3,4,5,6,7,8,9,10,10,10,10,
-			   1,2,3,4,5,6,7,8,9,10,10,10,10];
 const numPlayers = 3;
 const numRounds = 100;
+const deck = [
+    1,2,3,4,5,6,7,8,9,10,10,10,10,
+    1,2,3,4,5,6,7,8,9,10,10,10,10,
+    1,2,3,4,5,6,7,8,9,10,10,10,10,
+    1,2,3,4,5,6,7,8,9,10,10,10,10
+];
 
 var roundsPlayed = 0;
 
 while(roundsPlayed < numRounds){
-  var thisRound = roundsPlayed + 1;
-  console.log('------------ ROUND ' + thisRound);
-  results(play(deal(shuffle(deck), players(numPlayers))));
-  roundsPlayed++;
+    var thisRound = roundsPlayed + 1;
+    console.log('------------ ROUND ' + thisRound);
+    results(play(deal(shuffle(deck), players(numPlayers))));
+    roundsPlayed++;
 }
 
 function results(iplayers){
     var players = clone(iplayers);
     players.map(function(player, index){
+        var score = player.points;
         console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
     });
 }
@@ -33,7 +35,6 @@ function play(igame){
         var newPlayer = hitResults[1];
         newPlayers.push(newPlayer);
     });
-	//console.log("PLAYTIME OVER ----------------- deck.length " + deck.length);
     return newPlayers;
 }
 
@@ -54,7 +55,6 @@ function deal(ideck, iplayers){
         });
         i++;
     }
-    //console.log('DEALT CARDS ------------------- deck.length=' + deck.length)
     return [deck, players];
 }
 
@@ -66,13 +66,11 @@ function players(numPlayers){
         i++;
     }
     return p;
-
 }
 
 function shuffle(iarray) {
     var array = clone(iarray);
     var currentIndex = array.length, temporaryValue, randomIndex;
-    
     while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
@@ -115,6 +113,7 @@ function shouldHit(iplayers, iplayer){
     return player.points < 17 ? true : false;
 }
 
+
 function clone(arr){
-  return JSON.parse(JSON.stringify(arr));
+    return JSON.parse(JSON.stringify(arr));
 }
