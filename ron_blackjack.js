@@ -112,7 +112,7 @@ function clargs(args){
     for(var i = 0; i < args.length; i++){
         args[i] = clone(args[i]);
     }
-    return args
+    return args;
 }
 
 function clone(obj){
