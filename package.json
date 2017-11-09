@@ -1,0 +1,19 @@
+{
+  "name": "ron_blackjack_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ron_blackjack.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronniebnorth/ron_blackjack_js.git"
+  },
+  "author": "ronnie north",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ronniebnorth/ron_blackjack_js/issues"
+  },
+  "homepage": "https://github.com/ronniebnorth/ron_blackjack_js#readme"
+}

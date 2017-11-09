@@ -1,33 +1,32 @@
 
-const deckModel = [1,2,3,4,5,6,7,8,9,10,10,10,10,
+const deck = [1,2,3,4,5,6,7,8,9,10,10,10,10,
 			   1,2,3,4,5,6,7,8,9,10,10,10,10,
 			   1,2,3,4,5,6,7,8,9,10,10,10,10,
 			   1,2,3,4,5,6,7,8,9,10,10,10,10];
 const numPlayers = 3;
-const rounds = 10;
+const rounds = 100;
 
 
 var played = 0;
 
 while(played < rounds){
   var thisRound = played + 1;
-  //console.log('ROUND BEGINNING ROUND ' + thisRound + '-------- deckModel.length=' + deckModel.length);
-
-  results(play(deal(shuffle(clone(deckModel)), players(numPlayers))));
-
-  //console.log('ROUND COMPLETE ----------------- deckModel.length=' + deckModel.length);
-  //console.log(' ');
+  console.log('------------ ROUND ' + thisRound);
+  results(play(deal(shuffle(deck), players(numPlayers))));
   played++;
 }
 
-function results(players){
+
+function results(iplayers){
+    var players = clone(iplayers);
     players.map(function(player, index){
-        //console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
+        console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
     });
 }
 
 
-function play(game){
+function play(igame){
+    var game = clone(igame);
     var deck = game[0];
     var players = game[1];
     var newPlayers = [];
@@ -42,7 +41,9 @@ function play(game){
 }
 
 
-function deal(deck, players){
+function deal(ideck, iplayers){
+    var deck = clone(ideck);
+    var players = clone(iplayers);
     var i = 0;
     while(i < 2){
         players = players.map(function(player){ 
@@ -74,7 +75,8 @@ function players(numPlayers){
 }
 
 
-function shuffle(array) {
+function shuffle(iarray) {
+    var array = clone(iarray);
     var currentIndex = array.length, temporaryValue, randomIndex;
     
     while (0 !== currentIndex) {
@@ -112,7 +114,9 @@ function aces(iplayer){
 }
 
 
-function shouldHit(players, player){
+function shouldHit(iplayers, iplayer){
+    var players = clone(iplayers);
+    var player = clone(iplayer);
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
