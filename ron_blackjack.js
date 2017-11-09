@@ -1,5 +1,5 @@
-const numPlayers = 3;
-const numRounds = 100;
+const numPlayers = 1;
+const numRounds = 1;
 const deck = [
     1,2,3,4,5,6,7,8,9,10,10,10,10,
     1,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -16,31 +16,29 @@ while(roundsPlayed < numRounds){
     roundsPlayed++;
 }
 
-function results(iplayers){
-    var players = clone(iplayers);
+function results(players){
+    arguments = clone(arguments);
     players.map(function(player, index){
         var score = player.points;
         console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points)
     });
 }
 
-function play(igame){
-    var game = clone(igame);
+function play(game){
+    arguments = clone(arguments);
     var deck = game[0];
     var players = game[1];
-    var newPlayers = [];
-    players.map(function(player){
+    var newPlayers = players.map(function(player){
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
         var newPlayer = hitResults[1];
-        newPlayers.push(newPlayer);
+        return newPlayer;
     });
     return newPlayers;
 }
 
-function deal(ideck, iplayers){
-    var deck = clone(ideck);
-    var players = clone(iplayers);
+function deal(deck, players){
+    arguments = clone(arguments);
     var i = 0;
     while(i < 2){
         players = players.map(function(player){ 
@@ -68,8 +66,8 @@ function players(numPlayers){
     return p;
 }
 
-function shuffle(iarray) {
-    var array = clone(iarray);
+function shuffle(array) {
+    arguments = clone(arguments);
     var currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -81,10 +79,8 @@ function shuffle(iarray) {
     return array;
 }
 
-function hit(ideck, iplayers, iplayer){
-    var deck = clone(ideck);
-    var players = clone(iplayers);
-    var player = clone(iplayer);
+function hit(deck, players, player){
+    arguments = clone(arguments);
     while(player.points < 21 && shouldHit(players, player)){
         player.points += deck.pop();
         player = aces(player);
@@ -92,8 +88,8 @@ function hit(ideck, iplayers, iplayer){
     return [deck, player];
 }
 
-function aces(iplayer){
-    var player = clone(iplayer);
+function aces(player){
+    arguments = clone(arguments);
     if(player.points > 21){
         if(player.acesToUse > 0){
             player.points -= 10;
@@ -103,9 +99,9 @@ function aces(iplayer){
     return player;
 }
 
-function shouldHit(iplayers, iplayer){
-    var players = clone(iplayers);
-    var player = clone(iplayer);
+function shouldHit(players, player){
+    arguments = clone(arguments);
+
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
