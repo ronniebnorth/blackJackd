@@ -1,5 +1,5 @@
 const numPlayers = 1;
-const numRounds = 100;
+const numRounds = 100000;
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -81,15 +81,21 @@ const pairStrat = [
 ];
 
 var roundsPlayed = 0;
+var losses = 0;
 var wins = 0;
+var ties = 0;
+
+
 while(roundsPlayed < numRounds){
     var roundNum = roundsPlayed + 1;
-   // console.log('------------ ROUND ' + roundNum);
-    
-    wins += processResults(play(deal(shuffle(deck), getPlayers(numPlayers))));
+    // console.log('------------ ROUND ' + roundNum);    
+    processResults(play(deal(shuffle(deck), getPlayers(numPlayers))));
     roundsPlayed++;
 }
 console.log('wins', wins);
+console.log('losses', losses);
+console.log('ties', ties);
+
 
 function processResults(players){
     arguments = clargs(arguments);
@@ -97,17 +103,26 @@ function processResults(players){
     var dealerScore = 0;
     players.map(function(player, index){
         var score = player.points;
-        if(score > hiScore){ hiScore = score; }
+        
         if(player.type == 'dealer'){
             dealerScore = score;
+        }else{
+            if(score > hiScore){ hiScore = score; }
         }
         //console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);
     });
-    if(hiScore == dealerScore){
-        return 0;
+    if(hiScore < dealerScore){
+        losses++;
     }
-    return 1;
+    if(hiScore > dealerScore){
+        wins++;
+    }
+    if(hiScore == dealerScore){
+        ties++;
+    }
+
 }
+
 
 function play(game){
     arguments = clargs(arguments);
@@ -122,6 +137,7 @@ function play(game){
     });
     return newPlayers;
 }
+
 
 function deal(deck, players){
     arguments = clargs(arguments);
@@ -146,6 +162,7 @@ function deal(deck, players){
     return [deck, players];
 }
 
+
 function getPlayers(numPlayers){
     var players = [{type:'dealer',points:0,acesToUse:0,upcard:0}];
     var i = 0;
@@ -155,6 +172,7 @@ function getPlayers(numPlayers){
     }
     return players;
 }
+
 
 function shuffle(arr) {
     arguments = clargs(arguments);
@@ -168,6 +186,7 @@ function shuffle(arr) {
     }
     return arr;
 }
+
 
 function hit(deck, players, player){
     arguments = clargs(arguments);
@@ -184,6 +203,7 @@ function hit(deck, players, player){
     return [deck, player];
 }
 
+
 function shouldHit(players, player){
     arguments = clargs(arguments);
     if(player.type === 'dealer'){
@@ -194,6 +214,7 @@ function shouldHit(players, player){
     })
     return strategize(player, dealers[0].upcard);
 }
+
 
 function strategize(player, upcard){
     arguments = clargs(arguments);
@@ -211,6 +232,7 @@ function strategize(player, upcard){
     }
 }
 
+
 function playAces(player){
     arguments = clargs(arguments);
     if(player.points > 21){
@@ -223,12 +245,14 @@ function playAces(player){
     return player;
 }
 
+
 function clargs(args){
     for(var i = 0; i < args.length; i++){
         args[i] = clone(args[i]);
     }
     return args;
 }
+
 
 function clone(obj){
     return JSON.parse(JSON.stringify(obj));
