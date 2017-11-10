@@ -7,7 +7,12 @@ const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10
 ];
 
-// rows = total, cols = upcard
+// rows = player total (1-20) 
+// cols = dealer upcard (1-10 with 1 being the Ace card)
+// 0 = hit 
+// 3 = double down
+// 1 = stand
+// 2 = split
 const hardStrat = [
     [9,9,9,9,9,9,9,9,9,9],
     [9,9,9,9,9,9,9,9,9,9],
