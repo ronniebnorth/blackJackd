@@ -1,5 +1,5 @@
-const numPlayers = 3;
-const numRounds = 5;
+const numPlayers = 1;
+const numRounds = 1;
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -107,8 +107,8 @@ function processResults(players){
         var score = player.points;
         if(player.type != 'dealer'){
             if(score > dealerScore){ wins++; }
-            if(score < dealerScore){ losses++; }
-            if(score == dealerScore){ ties++; }
+            if(score < dealerScore || score == 0){ losses++; }
+            if(score == dealerScore && score != 0){ ties++; }
         }
         console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);
     });
@@ -119,6 +119,7 @@ function play(game){
     arguments = clargs(arguments);
     var deck = game[0];
     var players = game[1];
+    // todo: start with player 1 instead of dealer
     var newPlayers = players.map(function(player){
         console.log('playing ', player);
         var hitResults = hit(deck, players, player); 
@@ -210,10 +211,11 @@ function shouldHit(players, player){
 function strategize(player, upcard){
     arguments = clargs(arguments);
     var stratCode = 0;
+    if(upcard == 11){ upcard = 1; }
     if(player.acesToUse > 0){
-        stratCode = softStrat[player.points][upcard];
+        stratCode = softStrat[player.points-1][upcard-1];
     }else{
-        stratCode = hardStrat[player.points][upcard];
+        stratCode = hardStrat[player.points-1][upcard-1];
     }
     console.log('strat code', stratCode);
     if(stratCode == 0 || stratCode == 3){
