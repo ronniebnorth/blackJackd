@@ -1,5 +1,14 @@
+// blackJackd by Ronnie North 2017
+// Analyze blackjack strategies 
+
+// Adjust numPlayers and numRounds, then 'node blackJackd.js' to run
+
+DEBUG = false; // console logs a bunch
+
 const numPlayers = 3;
-const numRounds = 5;
+const numRounds = 10;
+
+
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -7,7 +16,7 @@ const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10
 ];
 
-// STRATEGY GRIDS
+// STRATEGY GRIDS (strategizer chooses from hard, soft, or pairs grid depending on hand and dealer upcard)
 // rows = player total (1-20) 
 // cols = dealer upcard (1-10 with 1 being the Ace card)
 // 0 = hit 
@@ -91,9 +100,6 @@ var losses = 0;
 var wins = 0;
 var ties = 0;
 
-DEBUG = true; 
-
-
 while(roundsPlayed < numRounds){
     var roundNum = roundsPlayed + 1;
     if(DEBUG){console.log('------------ ROUND ' + roundNum);}    
@@ -140,6 +146,7 @@ function deal(deck, players){
     var i = 0;
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
+            // dealer first... who cares.
             var card = deck.pop();
             if(DEBUG){console.log('player ' + ind + ' dealt card ', card);}
             var nPlayer = {
