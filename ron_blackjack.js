@@ -1,5 +1,5 @@
 const numPlayers = 1;
-const numRounds = 100000;
+const numRounds = 100;
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -192,25 +192,17 @@ function shouldHit(players, player){
     var dealers = players.filter(function(player){
         return player.type == 'dealer';
     })
-    var dealer = dealers[0];
-    var upcard = dealer.upcard;
-    var playerPoints = player.points;
-    var hit = strategize(player, upcard);
-    return hit;
+    return strategize(player, dealers[0].upcard);
 }
 
 function strategize(player, upcard){
-    //console.log('..', player, upcard);
-    
     arguments = clargs(arguments);
-
     var stratCode = 0;
     if(player.acesToUse > 0){
         stratCode = softStrat[player.points][upcard];
     }else{
         stratCode = hardStrat[player.points][upcard];
     }
-    
     //console.log('strat code', stratCode);
     if(stratCode == 0 || stratCode == 3){
         return true;
