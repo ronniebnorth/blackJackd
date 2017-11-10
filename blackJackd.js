@@ -2,6 +2,7 @@
 // test blackjack strategies 
 
 // Adjust numPlayers and numRounds, then 'node blackJackd.js' to run
+// Alter strategy grids to test new strategies
 
 const numPlayers = 1;
 const numRounds = 100000000;
@@ -18,9 +19,9 @@ const deck = [
 // rows = player total (1-20) 
 // cols = dealer upcard (1-10 with 1 being the Ace card)
 // 0 = hit 
-// 3 = double down
 // 1 = stand
 // 2 = split
+// 3 = double down
 const hardStrat = [
     [9,9,9,9,9,9,9,9,9,9],
     [9,9,9,9,9,9,9,9,9,9],
