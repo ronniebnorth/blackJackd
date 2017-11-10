@@ -100,9 +100,9 @@ while(roundsPlayed < numRounds){
     processResults(play(deal(shuffle(deck), getPlayers(numPlayers))));
     roundsPlayed++;
 }
-console.log('wins', wins);
-console.log('losses', losses);
-console.log('ties', ties);
+console.log('WINS -----', wins);
+console.log('LOSS -----', losses);
+console.log('TIES -----', ties);
 
 
 function processResults(players){
@@ -124,8 +124,8 @@ function play(game){
     arguments = clargs(arguments);
     var deck = game[0];
     var players = game[1];
-    var newPlayers = players.map(function(player){
-        if(DEBUG){console.log('playing ', player);}
+    var newPlayers = players.map(function(player, ind, plyrs){
+        if(DEBUG){console.log('playing player: ' + ind, player);}
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
         var newPlayer = hitResults[1];
@@ -191,7 +191,7 @@ function hit(deck, players, player){
         var card = deck.pop();
         player.points += card;
         if(card == 11){ player.acesToUse++; }
-        if(DEBUG){console.log('player hit ', player, card);}
+        if(DEBUG){console.log('player hit ', player, ' player draws a ' + card);}
         player = playAces(player);
     }   
     if(player.points > 21){
