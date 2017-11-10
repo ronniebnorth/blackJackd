@@ -105,7 +105,6 @@ function processResults(players){
     var dealerScore = dealers[0].points;
     players.map(function(player, index){
         var score = player.points;
-        
         if(player.type != 'dealer'){
             if(score > dealerScore){ wins++; }
             if(score < dealerScore){ losses++; }
