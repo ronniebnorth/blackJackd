@@ -104,10 +104,12 @@ console.log('ties', ties);
 
 function processResults(players){
     arguments = clargs(arguments);
+    //this function modifies data outside of itself (wins,losses,ties), so that needs fixing
     var dealers = players.filter(function(plyr){
         return plyr.type == 'dealer';
     });
     var dealerScore = dealers[0].points;
+    // need to check if all players busted.. then dealer automatically wins
     players.map(function(player, index){
         var score = player.points;
         if(player.type != 'dealer'){
@@ -124,9 +126,10 @@ function play(game){
     arguments = clargs(arguments);
     var deck = game[0];
     var players = game[1];
-    // todo: start with player 1 instead of dealer
+    // todo: start with player 1 instead of dealer, then dealer make sure doesn't bust if all players bust beforehand
     var newPlayers = players.map(function(player){
         console.log('playing ', player);
+        // todo: do split action somewhere around here
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
         var newPlayer = hitResults[1];
