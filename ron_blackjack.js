@@ -7,6 +7,7 @@ const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10
 ];
 
+// STRATEGY GRIDS
 // rows = player total (1-20) 
 // cols = dealer upcard (1-10 with 1 being the Ace card)
 // 0 = hit 
