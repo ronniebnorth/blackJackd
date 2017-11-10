@@ -1,19 +1,19 @@
 {
-  "name": "ron_blackjack_js",
+  "name": "blackJackd",
   "version": "1.0.0",
   "description": "",
-  "main": "ron_blackjack.js",
+  "main": "blackJackd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ronniebnorth/ron_blackjack_js.git"
+    "url": "git+https://github.com/ronniebnorth/blackJackd.git"
   },
   "author": "ronnie north",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ronniebnorth/ron_blackjack_js/issues"
+    "url": "https://github.com/ronniebnorth/blackJackd/issues"
   },
-  "homepage": "https://github.com/ronniebnorth/ron_blackjack_js#readme"
+  "homepage": "https://github.com/ronniebnorth/blackJackd#readme"
 }
