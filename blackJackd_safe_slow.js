@@ -6,7 +6,7 @@
 DEBUG = false; // console logs a bunch
 
 const numPlayers = 1;
-const numRounds = 100000000;
+const numRounds = 10000000;
 
 
 const deck = [
@@ -95,8 +95,6 @@ const pairStrat = [
     [1,1,1,1,1,1,1,1,1,1]
 ];
 
-
-
 var roundsPlayed = 0;
 var losses = 0;
 var wins = 0;
@@ -107,10 +105,7 @@ console.time('testGameLoop');
 while(roundsPlayed < numRounds){
     var roundNum = roundsPlayed + 1;
     if(DEBUG){console.log('------------ ROUND ' + roundNum);}    
-    var ndeck = clone(deck);
-
-    processResults(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
-
+    processResults(play(deal(shuffle(deck), getPlayers(numPlayers))));
     roundsPlayed++;
 }
 console.log('WINS -----', wins);
@@ -119,8 +114,8 @@ console.log('TIES -----', ties);
 
 console.timeEnd('testGameLoop');
 
-
 function processResults(players){
+    arguments = clargs(arguments);
     var dealerScore = players[0].points;
     players.map(function(player, index){
         var score = player.points;
@@ -134,9 +129,8 @@ function processResults(players){
 }
 
 
-
-
 function play(game){
+    arguments = clargs(arguments);
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player, ind, plyrs){
@@ -151,6 +145,7 @@ function play(game){
 
 
 function deal(deck, players){
+    arguments = clargs(arguments);
     var i = 0;
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
@@ -186,6 +181,7 @@ function getPlayers(numPlayers){
 
 
 function shuffle(arr) {
+    arguments = clargs(arguments);
     var curInd = arr.length, tempVal, randInd;
     while (0 !== curInd) {
         randInd = Math.floor(Math.random() * curInd);
@@ -199,6 +195,7 @@ function shuffle(arr) {
 
 
 function hit(deck, players, player){
+    arguments = clargs(arguments);
     // todo: if player has blackjack point *= 1.5
     while(player.points < 21 && shouldHit(players, player)){
         var card = deck.pop();
@@ -215,6 +212,7 @@ function hit(deck, players, player){
 
 
 function shouldHit(players, player){
+    arguments = clargs(arguments);
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
@@ -223,6 +221,7 @@ function shouldHit(players, player){
 
 
 function strategize(player, upcard){
+    arguments = clargs(arguments);
     var stratCode = 0;
     if(upcard == 11){ upcard = 1; }
     if(player.acesToUse > 0){
@@ -240,6 +239,7 @@ function strategize(player, upcard){
 
 
 function playAces(player){
+    arguments = clargs(arguments);
     if(player.points > 21){
         if(player.acesToUse > 0){
             player.points -= 10;
@@ -262,5 +262,3 @@ function clargs(args){
 function clone(obj){
     return JSON.parse(JSON.stringify(obj));
 }
-
-

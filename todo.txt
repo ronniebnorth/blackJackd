@@ -1,0 +1,8 @@
+break it down
+put strategizer in a module
+put in splits
+time with curried functions 
+
+
+started at 1:44
+100 million

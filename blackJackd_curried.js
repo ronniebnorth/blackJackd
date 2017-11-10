@@ -6,7 +6,7 @@
 DEBUG = false; // console logs a bunch
 
 const numPlayers = 1;
-const numRounds = 100000000;
+const numRounds = 10000000;
 
 
 const deck = [
@@ -97,46 +97,9 @@ const pairStrat = [
 
 
 
-var roundsPlayed = 0;
-var losses = 0;
-var wins = 0;
-var ties = 0;
 
-console.time('testGameLoop');
+const play = (game) => {
 
-while(roundsPlayed < numRounds){
-    var roundNum = roundsPlayed + 1;
-    if(DEBUG){console.log('------------ ROUND ' + roundNum);}    
-    var ndeck = clone(deck);
-
-    processResults(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
-
-    roundsPlayed++;
-}
-console.log('WINS -----', wins);
-console.log('LOSS -----', losses);
-console.log('TIES -----', ties);
-
-console.timeEnd('testGameLoop');
-
-
-function processResults(players){
-    var dealerScore = players[0].points;
-    players.map(function(player, index){
-        var score = player.points;
-        if(player.type != 'dealer'){
-            if(score > dealerScore){ wins++; }
-            if(score < dealerScore || score == 0){ losses++; }
-            if(score == dealerScore && score != 0){ ties++; }
-        }
-        if(DEBUG){console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);}
-    });
-}
-
-
-
-
-function play(game){
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player, ind, plyrs){
@@ -150,7 +113,8 @@ function play(game){
 }
 
 
-function deal(deck, players){
+const deal = (deck, players) => {
+
     var i = 0;
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
@@ -174,7 +138,7 @@ function deal(deck, players){
 }
 
 
-function getPlayers(numPlayers){
+const getPlayers = (numPlayers) =>  {
     var players = [{type:'dealer',points:0,acesToUse:0,upcard:0}];
     var i = 0;
     while(i < numPlayers){
@@ -185,7 +149,8 @@ function getPlayers(numPlayers){
 }
 
 
-function shuffle(arr) {
+const shuffle = (arr) => {
+
     var curInd = arr.length, tempVal, randInd;
     while (0 !== curInd) {
         randInd = Math.floor(Math.random() * curInd);
@@ -198,7 +163,8 @@ function shuffle(arr) {
 }
 
 
-function hit(deck, players, player){
+const hit = (deck, players, player) => {
+
     // todo: if player has blackjack point *= 1.5
     while(player.points < 21 && shouldHit(players, player)){
         var card = deck.pop();
@@ -214,7 +180,8 @@ function hit(deck, players, player){
 }
 
 
-function shouldHit(players, player){
+const shouldHit = (players, player) => {
+
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
@@ -222,7 +189,8 @@ function shouldHit(players, player){
 }
 
 
-function strategize(player, upcard){
+const strategize = (player, upcard) => {
+
     var stratCode = 0;
     if(upcard == 11){ upcard = 1; }
     if(player.acesToUse > 0){
@@ -239,7 +207,8 @@ function strategize(player, upcard){
 }
 
 
-function playAces(player){
+const playAces = (player) => {
+
     if(player.points > 21){
         if(player.acesToUse > 0){
             player.points -= 10;
@@ -251,7 +220,7 @@ function playAces(player){
 }
 
 
-function clargs(args){
+const clargs = (args) => {
     for(var i = 0; i < args.length; i++){
         args[i] = clone(args[i]);
     }
@@ -259,8 +228,41 @@ function clargs(args){
 }
 
 
-function clone(obj){
+const clone = (obj) => {
     return JSON.parse(JSON.stringify(obj));
 }
 
 
+var roundsPlayed = 0;
+var losses = 0;
+var wins = 0;
+var ties = 0;
+
+console.time('testGameLoop');
+
+while(roundsPlayed < numRounds){
+    var roundNum = roundsPlayed + 1;
+    if(DEBUG){console.log('------------ ROUND ' + roundNum);}    
+    var ndeck = clone(deck);
+    processResults(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
+    roundsPlayed++;
+}
+console.log('WINS -----', wins);
+console.log('LOSS -----', losses);
+console.log('TIES -----', ties);
+
+console.timeEnd('testGameLoop');
+
+function processResults(players){
+
+    var dealerScore = players[0].points;
+    players.map(function(player, index){
+        var score = player.points;
+        if(player.type != 'dealer'){
+            if(score > dealerScore){ wins++; }
+            if(score < dealerScore || score == 0){ losses++; }
+            if(score == dealerScore && score != 0){ ties++; }
+        }
+        if(DEBUG){console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);}
+    });
+}
