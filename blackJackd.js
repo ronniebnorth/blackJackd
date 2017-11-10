@@ -1,5 +1,5 @@
-const numPlayers = 1;
-const numRounds = 1000;
+const numPlayers = 3;
+const numRounds = 5;
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -91,7 +91,7 @@ var losses = 0;
 var wins = 0;
 var ties = 0;
 
-DEBUG = false; 
+DEBUG = true; 
 
 
 while(roundsPlayed < numRounds){
