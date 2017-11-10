@@ -111,7 +111,6 @@ while(roundsPlayed < numRounds){
         ndeck = ndeck.concat(clone(deck));
         deckCount++;
     }
-    console.log('decks length: ', ndeck.length);
 
     updateScoreboard(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
 
