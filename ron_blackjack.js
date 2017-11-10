@@ -127,7 +127,6 @@ function play(game){
     arguments = clargs(arguments);
     var deck = game[0];
     var players = game[1];
-    // todo: start with player 1 instead of dealer, then dealer make sure doesn't bust if all players bust beforehand
     var newPlayers = players.map(function(player){
         console.log('playing ', player);
         // todo: do split action somewhere around here
