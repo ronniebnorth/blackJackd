@@ -5,8 +5,8 @@
 // Alter strategy grids to test new strategies
 
 const numPlayers = 1;
-const numRounds = 100000000;
-
+const numRounds = 1; //100000000;
+const decksToUse = 6;
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -106,8 +106,14 @@ console.time('testGameLoop');
 while(roundsPlayed < numRounds){
     var roundNum = roundsPlayed + 1;  
     var ndeck = clone(deck);
+    var deckCount = 1;
+    while(deckCount < decksToUse){
+        ndeck = ndeck.concat(clone(deck));
+        deckCount++;
+    }
+    console.log('decks length: ', ndeck.length);
 
-    processResults(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
+    updateScoreboard(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
 
     roundsPlayed++;
 }
@@ -118,7 +124,7 @@ console.log('TIES -----', ties);
 console.timeEnd('testGameLoop');
 
 
-function processResults(players){
+function updateScoreboard(players){
     var dealerScore = players[0].points;
     players.map(function(player, index){
         var score = player.points;
