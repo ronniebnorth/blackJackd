@@ -1,5 +1,5 @@
 const numPlayers = 1;
-const numRounds = 1000000;
+const numRounds = 5000000;
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -186,6 +186,7 @@ function shuffle(arr) {
 
 function hit(deck, players, player){
     arguments = clargs(arguments);
+    // todo: if player has blackjack point *= 1.5
     while(player.points < 21 && shouldHit(players, player)){
         var card = deck.pop();
         player.points += card;
