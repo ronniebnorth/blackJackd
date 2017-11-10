@@ -3,8 +3,6 @@
 
 // Adjust numPlayers and numRounds, then 'node blackJackd.js' to run
 
-DEBUG = false; // console logs a bunch
-
 const numPlayers = 1;
 const numRounds = 100000000;
 
@@ -95,7 +93,7 @@ const pairStrat = [
     [1,1,1,1,1,1,1,1,1,1]
 ];
 
-
+//----------------------------START MAIN-------------------------//
 
 var roundsPlayed = 0;
 var losses = 0;
@@ -105,8 +103,7 @@ var ties = 0;
 console.time('testGameLoop');
 
 while(roundsPlayed < numRounds){
-    var roundNum = roundsPlayed + 1;
-    if(DEBUG){console.log('------------ ROUND ' + roundNum);}    
+    var roundNum = roundsPlayed + 1;  
     var ndeck = clone(deck);
 
     processResults(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
@@ -129,18 +126,16 @@ function processResults(players){
             if(score < dealerScore || score == 0){ losses++; }
             if(score == dealerScore && score != 0){ ties++; }
         }
-        if(DEBUG){console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);}
     });
 }
 
-
+//-------------------------END MAIN-------------------------//
 
 
 function play(game){
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player, ind, plyrs){
-        if(DEBUG){console.log('playing player: ' + ind, player);}
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
         var newPlayer = hitResults[1];
@@ -154,9 +149,7 @@ function deal(deck, players){
     var i = 0;
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
-            // dealer first... who cares.
             var card = deck.pop();
-            if(DEBUG){console.log('player ' + ind + ' dealt card ', card);}
             var nPlayer = {
                 type:player.type, 
                 points:player.points + card, 
@@ -199,12 +192,11 @@ function shuffle(arr) {
 
 
 function hit(deck, players, player){
-    // todo: if player has blackjack point *= 1.5
+    // todo: if player has blackjack 
     while(player.points < 21 && shouldHit(players, player)){
         var card = deck.pop();
         player.points += card;
         if(card == 11){ player.acesToUse++; }
-        if(DEBUG){console.log('player hit ', player, ' player draws a ' + card);}
         player = playAces(player);
     }   
     if(player.points > 21){
@@ -230,7 +222,6 @@ function strategize(player, upcard){
     }else{
         stratCode = hardStrat[player.points-1][upcard-1];
     }
-    if(DEBUG){console.log('strat code', stratCode);}
     if(stratCode == 0 || stratCode == 3){
         return true;
     }else{
@@ -244,7 +235,6 @@ function playAces(player){
         if(player.acesToUse > 0){
             player.points -= 10;
             player.acesToUse--;
-            if(DEBUG){console.log('player used ace ', player);}
         }
     }
     return player;

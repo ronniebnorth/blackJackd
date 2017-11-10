@@ -3,6 +3,4 @@ put strategizer in a module
 put in splits
 time with curried functions 
 
-
-started at 1:44
-100 million
+change grid codes
