@@ -1,5 +1,5 @@
-const numPlayers = 1;
-const numRounds = 100000;
+const numPlayers = 5;
+const numRounds = 100;
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -88,7 +88,7 @@ var ties = 0;
 
 while(roundsPlayed < numRounds){
     var roundNum = roundsPlayed + 1;
-    // console.log('------------ ROUND ' + roundNum);    
+    console.log('------------ ROUND ' + roundNum);    
     processResults(play(deal(shuffle(deck), getPlayers(numPlayers))));
     roundsPlayed++;
 }
@@ -99,28 +99,20 @@ console.log('ties', ties);
 
 function processResults(players){
     arguments = clargs(arguments);
-    var hiScore = 0; 
-    var dealerScore = 0;
+    var dealers = players.filter(function(plyr){
+        return plyr.type == 'dealer';
+    });
+    var dealerScore = dealers[0].points;
     players.map(function(player, index){
         var score = player.points;
         
-        if(player.type == 'dealer'){
-            dealerScore = score;
-        }else{
-            if(score > hiScore){ hiScore = score; }
+        if(player.type != 'dealer'){
+            if(score > dealerScore){ wins++; }
+            if(score < dealerScore){ losses++; }
+            if(score == dealerScore){ ties++; }
         }
-        //console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);
+        console.log(player.type + ' ' + index, '  ---------   Score: ' + player.points);
     });
-    if(hiScore < dealerScore){
-        losses++;
-    }
-    if(hiScore > dealerScore){
-        wins++;
-    }
-    if(hiScore == dealerScore){
-        ties++;
-    }
-
 }
 
 
@@ -129,7 +121,7 @@ function play(game){
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player){
-        //console.log('playing ', player);
+        console.log('playing ', player);
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
         var newPlayer = hitResults[1];
@@ -145,7 +137,7 @@ function deal(deck, players){
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
             var card = deck.pop();
-            //console.log('player ' + ind + ' dealt card ', card);
+            console.log('player ' + ind + ' dealt card ', card);
             var nPlayer = {
                 type:player.type, 
                 points:player.points + card, 
@@ -194,7 +186,7 @@ function hit(deck, players, player){
         var card = deck.pop();
         player.points += card;
         if(card == 11){ player.acesToUse++; }
-        //console.log('player hit ', player, card);
+        console.log('player hit ', player, card);
         player = playAces(player);
     }   
     if(player.points > 21){
@@ -224,7 +216,7 @@ function strategize(player, upcard){
     }else{
         stratCode = hardStrat[player.points][upcard];
     }
-    //console.log('strat code', stratCode);
+    console.log('strat code', stratCode);
     if(stratCode == 0 || stratCode == 3){
         return true;
     }else{
@@ -239,7 +231,7 @@ function playAces(player){
         if(player.acesToUse > 0){
             player.points -= 10;
             player.acesToUse--;
-            //console.log('player used ace ', player);
+            console.log('player used ace ', player);
         }
     }
     return player;
