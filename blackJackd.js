@@ -107,14 +107,7 @@ console.log('ties', ties);
 
 function processResults(players){
     arguments = clargs(arguments);
-    //this function modifies data outside of itself (wins,losses,ties), so that needs fixing
-    /*
-    var dealers = players.filter(function(plyr){
-        return plyr.type == 'dealer';
-    });
-    */
     var dealerScore = players[0].points;
-    // need to check if all players busted.. then dealer automatically wins
     players.map(function(player, index){
         var score = player.points;
         if(player.type != 'dealer'){
@@ -133,7 +126,6 @@ function play(game){
     var players = game[1];
     var newPlayers = players.map(function(player){
         if(DEBUG){console.log('playing ', player);}
-        // todo: do split action somewhere around here
         var hitResults = hit(deck, players, player); 
         deck = hitResults[0];
         var newPlayer = hitResults[1];
@@ -213,11 +205,6 @@ function shouldHit(players, player){
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
-    /*
-    var dealers = players.filter(function(player){
-        return player.type == 'dealer';
-    })
-    */
     return strategize(player, players[0].upcard);
 }
 
