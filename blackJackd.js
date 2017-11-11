@@ -4,9 +4,10 @@
 // Adjust numPlayers and numRounds, then 'node blackJackd.js' to run
 // Alter strategy grids to test new strategies
 
-const numPlayers = 1;
-const numRounds = 1; //100000000;
-const decksToUse = 6;
+
+const numPlayers = 100;
+const numRounds = 10000000;
+const decksToUse = 10; // it is shuffling every round right now..
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -128,9 +129,13 @@ function updateScoreboard(players){
     players.map(function(player, index){
         var score = player.points;
         if(player.type != 'dealer'){
-            if(score > dealerScore){ wins++; }
-            if(score < dealerScore || score == 0){ losses++; }
-            if(score == dealerScore && score != 0){ ties++; }
+            if(score > dealerScore){ 
+                wins++; 
+            }else if(score < dealerScore || score == 0){ 
+                losses++; 
+            }else if(score == dealerScore && score != 0){ 
+                ties++; 
+            }
         }
     });
 }
@@ -258,5 +263,3 @@ function clargs(args){
 function clone(obj){
     return JSON.parse(JSON.stringify(obj));
 }
-
-
