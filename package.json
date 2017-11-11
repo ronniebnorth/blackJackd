@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/ronniebnorth/blackJackd#readme",
   "dependencies": {
-
+    "cluster": "^0.7.7",
+    "gpu.js": "^1.0.0-rc.8",
+    "io": "^0.1.10",
+    "os": "^0.1.1"
   }
 }

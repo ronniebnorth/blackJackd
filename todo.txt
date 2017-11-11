@@ -1,6 +1,12 @@
 break it down
-put strategizer in a module
+clean it up
 put in splits
-time with curried functions 
-
+put in blackjacks
+time with curried functions // done, made no diff 
 change grid codes
+grid editor
+save data instead of consoling it out
+add betting
+brute force array guesser
+
+

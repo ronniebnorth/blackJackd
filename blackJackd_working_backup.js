@@ -1,5 +1,15 @@
 // blackJackd by Ronnie North 2017
-// test blackjack strategies
+// test blackjack strategies 
+
+// Adjust numPlayers and numRounds, then 'node blackJackd.js' to run
+// Alter strategy grids to test new strategies
+
+
+// these are the sweet spot settings for max speed
+const numPlayers = 100; //100 
+const numRounds = 10000000; //10000000
+const decksToUse = 10; //10
+// it is shuffling every round right now..
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -111,68 +121,53 @@ const pairStrat = [
     [1,1,1,1,1,1,1,1,1,1]
 ];
 
+//----------------------------START MAIN-------------------------//
+
+
+var losses = 0;
+var wins = 0;
+var ties = 0;
 
 console.time('testGameLoop');
-var res = playRounds(1,10000,8,deck,hardStrat,softStrat,pairStrat);
-//var res = playRounds(100,10000000,10,deck,hardStrat,softStrat,pairStrat);
-console.timeEnd('testGameLoop');
 
-console.log('WINS -----', res[0]);
-console.log('LOSS -----', res[1]);
-console.log('TIES -----', res[2]);
-
-
-
-function playRounds(numPlayers, numRounds, decksToUse, deck, hardStrat, softStrat, pairStrat){
-    var tscores = [0,0,0];
-    var roundsPlayed = 0;
-    while(roundsPlayed < numRounds){
-        var roundNum = roundsPlayed + 1;  
-        var ndeck = makeDeck(deck,decksToUse);
-        var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
-        tscores = sumArrays(tscores,rscores);
-        roundsPlayed++;
-    }
-    return tscores;
-}
-
-
-function sumArrays(t,r){
-    t = t.map(function (num, idx) {
-        return num + r[idx];
-    });
-    return t;
-}
-
-
-function makeDeck(deck,decksToUse){
+var roundsPlayed = 0;
+while(roundsPlayed < numRounds){
+    var roundNum = roundsPlayed + 1;  
     var ndeck = clone(deck);
     var deckCount = 1;
     while(deckCount < decksToUse){
         ndeck = ndeck.concat(clone(deck));
         deckCount++;
     }
-    return ndeck;
+
+    updateScoreboard(play(deal(shuffle(ndeck), getPlayers(numPlayers))));
+
+    roundsPlayed++;
 }
+console.log('WINS -----', wins);
+console.log('LOSS -----', losses);
+console.log('TIES -----', ties);
+
+console.timeEnd('testGameLoop');
 
 
-function score(players){
+function updateScoreboard(players){
     var dealerScore = players[0].points;
-    var scores = [0,0,0];
     players.map(function(player, index){
         var score = player.points;
         if(player.type != 'dealer'){
             if(score > dealerScore){ 
-                scores[0]++; 
+                wins++; 
             }else if(score < dealerScore || score == 0){ 
-                scores[1]++; 
+                losses++; 
             }else if(score == dealerScore && score != 0){ 
-                scores[2]++; 
+                ties++; 
             }
         }
     });
-    return scores;
 }
+
+//-------------------------END MAIN-------------------------//
 
 
 function play(game){
@@ -210,7 +205,7 @@ function deal(deck, players){
 }
 
 
-function createPlayers(numPlayers){
+function getPlayers(numPlayers){
     var players = [{type:'dealer',points:0,acesToUse:0,upcard:0}];
     var i = 0;
     while(i < numPlayers){
