@@ -5,9 +5,11 @@
 // Alter strategy grids to test new strategies
 
 
-const numPlayers = 100;
-const numRounds = 10000000;
-const decksToUse = 10; // it is shuffling every round right now..
+// these are the sweet spot settings for max speed
+const numPlayers = 100; //100 
+const numRounds = 10000000; //10000000
+const decksToUse = 10; //10
+// it is shuffling every round right now..
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
