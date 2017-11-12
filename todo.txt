@@ -10,3 +10,5 @@ add betting
 brute force array guesser
 
 
+standing on 16 when dealer has ace upcard, should be 17?
+

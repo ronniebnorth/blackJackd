@@ -1,5 +1,6 @@
 // blackJackd by Ronnie North 2017
 // test blackjack strategies
+const DEBUG = true;
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -29,9 +30,9 @@ const hardStrat = [
     [0,3,3,3,3,3,3,3,3,3],
     [0,0,0,1,1,1,0,0,0,0],
     [0,1,1,1,1,1,0,0,0,0],
-    [1,1,1,1,1,1,0,0,0,0],
-    [1,1,1,1,1,1,0,0,0,0],
-    [1,1,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,0,0,0,0],
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
@@ -113,10 +114,11 @@ const pairStrat = [
 
 
 console.time('testGameLoop');
-var res = playRounds(1,100,1,deck,hardStrat,softStrat,pairStrat);
-//var res = playRounds(100,10000000,10,deck,hardStrat,softStrat,pairStrat);
+var numPlayers = 1;
+var numRounds = 1;
+var decksToUse = 1;
+var res = playRounds(numPlayers,numRounds,decksToUse,deck,hardStrat,softStrat,pairStrat);
 console.timeEnd('testGameLoop');
-
 console.log('WINS -----', res[0]);
 console.log('LOSS -----', res[1]);
 console.log('TIES -----', res[2]);
@@ -130,18 +132,22 @@ function playRounds(numPlayers, numRounds, decksToUse, deck, hardStrat, softStra
         var roundNum = roundsPlayed + 1;  
         var ndeck = makeDeck(deck,decksToUse);
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
+        
         tscores = sumArrays(tscores,rscores);
+        if(roundsPlayed % 10000 == 0){
+            //console.log(tscores, tscores[0]/roundsPlayed);
+        }
         roundsPlayed++;
     }
     return tscores;
 }
 
 
-function sumArrays(t,r){
-    t = t.map(function (num, idx) {
-        return num + r[idx];
+function sumArrays(a1,a2){
+    a1 = a1.map(function (num, ind) {
+        return num + a2[ind];
     });
-    return t;
+    return a1;
 }
 
 
@@ -158,22 +164,31 @@ function makeDeck(deck,decksToUse){
 
 function score(players){
     var dealerScore = players[0].points;
+    if(DEBUG){ console.log("dealer score", dealerScore, '\n');}
     var scores = [0,0,0];
     players.map(function(player, index){
         var score = player.points;
         if(player.type != 'dealer'){
             if(score > dealerScore){ 
                 scores[0]++; 
-                if(player.blackjack){
+                if(DEBUG){ console.log("player wins", scores[0], '\n');}
+                if(player.blackjack === true){
                     scores[0] += .5;
+                    if(DEBUG){ console.log("Player has blackjack", player, scores[0], '\n');}
                 }
             }else if(score < dealerScore || score == 0){ 
                 scores[1]++; 
+                if(DEBUG){ console.log("player loses", scores[0], '\n');}
             }else if(score == dealerScore && score != 0){ 
+                if(DEBUG){ console.log("player draw", scores[0], '\n');}
                 scores[2]++; 
+            }else{
+                scores[1]++; 
+                if(DEBUG){ console.log("player loses", scores[0], '\n');}                
             }
         }
     });
+    if(DEBUG){ console.log("Scores ", scores, '\n');}
     return scores;
 }
 
@@ -181,20 +196,36 @@ function score(players){
 function play(game){
     var deck = game[0];
     var players = game[1];
-    if(players[0].points == 21){
-        return players.map(function(player){ return player.points = 0;});
+    var dealer = players[0];
+    var nPlayers = {};
+    if(dealer.points == 21){
+        if(DEBUG){ console.log("dealer has blackjack", "\n");}
+            nPlayers = players.map(function(player){ 
+            if(player.type == "player"){
+                player.points = 0;
+                return player;
+            }else{
+                return player;
+            }
+            
+        });
+        if(DEBUG){ console.log("after dealer blackjack", nPlayers, "\n");}
+    }else{
+        nPlayers = players.map(function(player, ind, plyrs){
+            if(player.points == 21){
+                player.blackjack = true; 
+                return player;
+            }
+            var hitResults = hit(deck, players, player); 
+            deck = hitResults[0];
+            var newPlayer = hitResults[1];
+            if(DEBUG){ console.log(newPlayer.type + " results ", newPlayer, "\n");}
+            return newPlayer;
+        });
+        if(DEBUG){ console.log("after dealer non blackjack", nPlayers, "\n");}
     }
-    var newPlayers = players.map(function(player, ind, plyrs){
-        if(player.points == 21){
-            player.blackjack = true; 
-            return player;
-        }
-        var hitResults = hit(deck, players, player); 
-        deck = hitResults[0];
-        var newPlayer = hitResults[1];
-        return newPlayer;
-    });
-    return newPlayers;
+    //console.log('yeah', nPlayers);
+    return nPlayers;
 }
 
 
@@ -215,6 +246,7 @@ function deal(deck, players){
             }
 
 			if(card === 11){ nPlayer.acesToUse++; }
+            if(DEBUG){ console.log("deals " + card + " card to " + nPlayer.type, nPlayer, '\n');}
             return nPlayer;
         });
         i++;
@@ -227,7 +259,7 @@ function createPlayers(numPlayers){
     var players = [{type:'dealer',points:0,acesToUse:0,upcard:0}];
     var i = 0;
     while(i < numPlayers){
-        players.push({type:'player',points:0,acesToUse:0,hasPair:0});
+        players.push({type:'player',points:0,acesToUse:0});
         i++;
     }
     return players;
@@ -248,13 +280,18 @@ function shuffle(arr) {
 
 
 function hit(deck, players, player){
+    // deal with doubling down around here...
+
     while(player.points < 21 && shouldHit(players, player)){
         var card = deck.pop();
+        
         player.points += card;
         if(card == 11){ player.acesToUse++; }
+        if(DEBUG){ console.log(player.type + " hits and gets a " + card, player, '\n');}
         player = playAces(player);
     }   
     if(player.points > 21){
+        //two aces, split or whatever
         player.points = 0;
     }
     return [deck, player];
@@ -270,10 +307,11 @@ function shouldHit(players, player){
 
 
 function strategize(player, upcard){
+    if(DEBUG){ console.log(player.type + " strategizing", player, 'dealer upcard is ',upcard, '\n');}
     var stratCode = 0;
     if(upcard == 11){ upcard = 1; }
     if(player.acesToUse > 0){
-        stratCode = softStrat[player.points-1][upcard-1];
+        stratCode = softStrat[player.points-11][upcard-1];
     }else{
         stratCode = hardStrat[player.points-1][upcard-1];
     }
@@ -288,8 +326,10 @@ function strategize(player, upcard){
 function playAces(player){
     if(player.points > 21){
         if(player.acesToUse > 0){
+            
             player.points -= 10;
             player.acesToUse--;
+            if(DEBUG){console.log(player.type + " uses an ace ", player, "\n");}
         }
     }
     return player;
