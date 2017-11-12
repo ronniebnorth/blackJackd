@@ -182,18 +182,12 @@ function score(players){
                 }
             }else if(points < dealerPoints || points == 0){ 
                 scores[1]++; 
-                if(player.doubledDown){
-                    scores[1]++;
-                }
                 if(DEBUG){ console.log("player loses", scores[0], '\n');}
             }else if(points == dealerPoints && points != 0){ 
                 if(DEBUG){ console.log("player draw", scores[0], '\n');}
                 scores[2]++; 
             }else{
                 scores[1]++; 
-                if(player.doubledDown){
-                    scores[1]++;
-                }
                 if(DEBUG){ console.log("player loses", scores[0], '\n');}                
             }
         }
@@ -226,10 +220,6 @@ function play(game){
             if(player.points == 21){
                 player.blackjack = true; 
                 return player;
-            }
-            if(player.points == 22){
-                player.acesToUse--;
-                player.points = 12; 
             }
             var hitResults = hit(deck, players, player); 
             deck = hitResults[0];
@@ -333,9 +323,6 @@ function shouldHit(players, player){
     if(player.type === 'dealer'){
         return player.points < 17 ? true : false;
     }
-    if(player.points == 22 || player.points == 2){
-        if(DEBUG){ console.log(player.type + " -------------------------------STRATCODE??? ", '\n');}
-    }
     var stratCode = strategize(player, players[0].upcard);
     if(stratCode == 0){
         return true;
@@ -344,10 +331,6 @@ function shouldHit(players, player){
     }else if(stratCode == 2){
         // do split -- add new player to game, this player divides cards with new player and both get card from deck...
     }else{
-        if(stratCode != 1){
-            if(DEBUG){ console.log(player.type + " -------------------------------STRATCODE 9??? ", stratCode, '\n');}
-        }
-        
         return false;
     }
 }
