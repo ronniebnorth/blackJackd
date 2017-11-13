@@ -12,3 +12,7 @@ brute force array guesser
 
 standing on 16 when dealer has ace upcard, should be 17?
 
+
+hit split aces variable needed
+
+

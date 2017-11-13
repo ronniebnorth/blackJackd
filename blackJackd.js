@@ -116,7 +116,7 @@ const pairStrat = [
 console.time('testGameLoop');
 var numPlayers = 1;
 var numRounds = 100000000;
-var decksToUse = 1;
+var decksToUse = 8;
 var res = playRounds(numPlayers,numRounds,decksToUse,deck,hardStrat,softStrat,pairStrat);
 console.timeEnd('testGameLoop');
 console.log('WINS -----', res[0]);
@@ -206,7 +206,7 @@ function play(game){
     var deck = game[0];
     var players = game[1];
     var dealer = players[0];
-    var nPlayers = {};
+    var nPlayers = [];
 
     if(dealer.points == 21){ 
         if(DEBUG){ console.log("dealer has blackjack", "\n");}
