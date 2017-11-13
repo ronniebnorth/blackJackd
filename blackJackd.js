@@ -166,12 +166,9 @@ function score(players){
     var dealerPoints = players[0].points;
     if(DEBUG){ console.log("dealer score", dealerPoints, '\n');}
     var scores = [0,0,0];
-    //players.map(function(player, index){
-    //players.slice(1,players.length).map(function(player, index){
     for(var i = 1; i < players.length; i++){
         var player = players[i];
         var points = player.points;
-        //if(player.type != 'dealer'){
         if(points > dealerPoints || player.blackjack == true){ 
             scores[0]++; 
             if(player.doubledDown){
@@ -199,8 +196,6 @@ function score(players){
             }
             if(DEBUG){ console.log("player loses", scores[0], '\n');}                
         }
-        //}
-    //});
     }
     if(DEBUG){ console.log("Scores ", scores, '\n');}
     return scores;
@@ -256,7 +251,7 @@ function doSplits(deck, players){
             var stratCode = strategize(player, players[0].upcard);
             if(stratCode == 2){ // do split
                 if(DEBUG){ console.log("Player gets SPLIT code", player, players, "\n");}
-                var sPlayer = {type:'player',points:0,acesToUse:0,doubledDown:false,canSplit:false};
+                var sPlayer = createPlayer();
                 var splitPoints = player.points / 2;
                 sPlayer.points = splitPoints;
                 player.points = splitPoints;
@@ -286,9 +281,8 @@ function doSplits(deck, players){
 
 function deal(deck, players){
     var i = 0;
-    var spawnedPlayers = [];
     while(i < 2){
-        players = players.map(function(player, ind, plyrs){ 
+        players = players.map(function(player){ 
             var card = deck.pop();
             var newPoints = player.points + card;  
             var nPlayer = {
@@ -316,13 +310,22 @@ function deal(deck, players){
 
 
 function createPlayers(numPlayers){
-    var players = [{type:'dealer',points:0,acesToUse:0,upcard:0}];
+    var players = [createDealer()];
     var i = 0;
     while(i < numPlayers){
-        players.push({type:'player',points:0,acesToUse:0,doubledDown:false,canSplit:false});
+        players.push(createPlayer());
         i++;
     }
     return players;
+}
+
+
+function createDealer(){
+    return {type:'dealer',points:0,acesToUse:0,upcard:0};
+}
+
+function createPlayer(){
+    return {type:'player',points:0,acesToUse:0,doubledDown:false,canSplit:false};
 }
 
 
