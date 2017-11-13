@@ -1,6 +1,6 @@
 // blackJackd by Ronnie North 2017
 // test blackjack strategies
-const DEBUG = true;
+const DEBUG = false;
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -108,15 +108,15 @@ const pairStrat = [
     [9,9,9,9,9,9,9,9,9,9],
     [1,2,2,2,2,2,1,2,2,1],
     [9,9,9,9,9,9,9,9,9,9],
-    [2,2,2,2,2,2,2,2,2,2],
+    [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1]
 ];
 
 
 console.time('testGameLoop');
-var numPlayers = 1; //100;
-var numRounds = 1; //10000000;
-var decksToUse = 1; //10;
+var numPlayers = 1;
+var numRounds = 100000000;
+var decksToUse = 1;
 var res = playRounds(numPlayers,numRounds,decksToUse,deck,hardStrat,softStrat,pairStrat);
 console.timeEnd('testGameLoop');
 console.log('WINS -----', res[0]);
@@ -134,8 +134,8 @@ function playRounds(numPlayers, numRounds, decksToUse, deck, hardStrat, softStra
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
         
         tscores = sumArrays(tscores,rscores);
-        if(roundsPlayed % 10000 == 0){
-            console.log(tscores, tscores[0]/roundsPlayed);
+        if(roundsPlayed % 100000 == 0){
+            if(!DEBUG){console.log(tscores, tscores[0]/(tscores[0]+tscores[1]));}
         }
         roundsPlayed++;
     }
@@ -282,7 +282,7 @@ function doSplits(deck, players){
         }
         newPlayers.push(player);
     });
-    console.log("players after doing splits", newPlayers);
+    if(DEBUG){console.log("players after doing splits", newPlayers);}
     return [deck, newPlayers];
 }
 
@@ -308,7 +308,7 @@ function deal(deck, players){
             }
             if(nPlayer.type == "player" && card === nPlayer.points){
                 nPlayer.canSplit = true; 
-                console.log("CAN SPLIT IS TRUE!!!!!!!-----------------");
+                if(DEBUG){console.log("CAN SPLIT IS TRUE!!!!!!!-----------------");}
             }
             nPlayer.points = newPoints;
 			if(card === 11){ nPlayer.acesToUse++; }
