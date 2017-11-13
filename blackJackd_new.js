@@ -1,12 +1,11 @@
-// blackJackd by Ronnie North 2017
-// test blackjack strategies
+// blackJackd Strategy Tester by Ronnie North 2017
 
 const DEBUG = false;
 
 console.time('testGameLoop');
 
 const numPlayers = 1;
-const numRounds = 10000000;
+const numRounds = 100000000;
 const numDecks = 8;
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
@@ -27,7 +26,7 @@ function playRounds(numPlayers, numRounds, deck){
         
         tscores = sumArrays(tscores,rscores);
         if(roundsPlayed % 100000 == 0){
-            if(!DEBUG){console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);}
+            console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);
         }
         roundsPlayed++;
     }
@@ -256,7 +255,6 @@ function hit(deck, players, player){
             player = playAces(player);
         } 
     }
-  
     if(player.points > 21){
         player.points = 0;
     }
@@ -278,7 +276,7 @@ function shouldHit(players, player){
 
 function strategize(player, upcard){
     if(DEBUG){ console.log(player.type + " strategizing", player, 'dealer upcard is ',upcard, '\n');}
-    var points = player.points - 1; // - (10 * player.acesToUse);
+    var points = player.points - 1;
     if(player.acesToUse > 0){
         points = points - 10;
     }
