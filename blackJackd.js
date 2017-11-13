@@ -166,38 +166,42 @@ function score(players){
     var dealerPoints = players[0].points;
     if(DEBUG){ console.log("dealer score", dealerPoints, '\n');}
     var scores = [0,0,0];
-    players.map(function(player, index){
+    //players.map(function(player, index){
+    //players.slice(1,players.length).map(function(player, index){
+    for(var i = 1; i < players.length; i++){
+        var player = players[i];
         var points = player.points;
-        if(player.type != 'dealer'){
-            if(points > dealerPoints || player.blackjack == true){ 
-                scores[0]++; 
-                if(player.doubledDown){
-                    scores[0]++;
-                }
-                if(DEBUG){ console.log("player wins", scores[0], '\n');}
-                if(player.blackjack === true){
-                    scores[0] += .5;
-
-                    if(DEBUG){ console.log("Player has blackjack", player, scores[0], '\n');}
-                }
-            }else if(points < dealerPoints || points == 0){ 
-                scores[1]++; 
-                if(player.doubledDown){
-                    scores[1]++;
-                }
-                if(DEBUG){ console.log("player loses", scores[0], '\n');}
-            }else if(points == dealerPoints && points != 0){ 
-                if(DEBUG){ console.log("player draw", scores[0], '\n');}
-                scores[2]++; 
-            }else{
-                scores[1]++; 
-                if(player.doubledDown){
-                    scores[1]++;
-                }
-                if(DEBUG){ console.log("player loses", scores[0], '\n');}                
+        //if(player.type != 'dealer'){
+        if(points > dealerPoints || player.blackjack == true){ 
+            scores[0]++; 
+            if(player.doubledDown){
+                scores[0]++;
             }
+            if(DEBUG){ console.log("player wins", scores[0], '\n');}
+            if(player.blackjack === true){
+                scores[0] += .5;
+
+                if(DEBUG){ console.log("Player has blackjack", player, scores[0], '\n');}
+            }
+        }else if(points < dealerPoints || points == 0){ 
+            scores[1]++; 
+            if(player.doubledDown){
+                scores[1]++;
+            }
+            if(DEBUG){ console.log("player loses", scores[0], '\n');}
+        }else if(points == dealerPoints && points != 0){ 
+            if(DEBUG){ console.log("player draw", scores[0], '\n');}
+            scores[2]++; 
+        }else{
+            scores[1]++; 
+            if(player.doubledDown){
+                scores[1]++;
+            }
+            if(DEBUG){ console.log("player loses", scores[0], '\n');}                
         }
-    });
+        //}
+    //});
+    }
     if(DEBUG){ console.log("Scores ", scores, '\n');}
     return scores;
 }
@@ -218,17 +222,12 @@ function play(game){
             }else{
                 return player;
             }
-            
         });
         if(DEBUG){ console.log("after dealer blackjack", nPlayers, "\n");}
     }else{
-        // check here for any players can split, get strat code, and add new players if stratcode = 2 before going into this loop
-        // //var stratCode = strategize(player, players[0].upcard);
         spDeckPly = doSplits(deck, players);
-        
         deck = spDeckPly[0];
         nPlayers = spDeckPly[1];
-
         nPlayers = nPlayers.map(function(player, ind, plyrs){
             if(player.points == 21){
                 player.blackjack = true; 
@@ -244,7 +243,6 @@ function play(game){
             if(DEBUG){ console.log(newPlayer.type + " results ", newPlayer, "\n");}
             return newPlayer;
         });
-        //if(DEBUG){ console.log("after dealer non blackjack", nPlayers, "\n");}
     }
     return nPlayers;
 }
@@ -252,7 +250,6 @@ function play(game){
 
 function doSplits(deck, players){
     var newPlayers = [];
-
     players.map(function(player){
         if(player.canSplit){
             if(DEBUG){ console.log("player can SPLIT", player, players, "\n");}
@@ -293,10 +290,7 @@ function deal(deck, players){
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
             var card = deck.pop();
-            var newPoints = player.points + card;
-
-
-            
+            var newPoints = player.points + card;  
             var nPlayer = {
                 type:player.type, 
                 points:player.points, 
@@ -387,9 +381,6 @@ function shouldHit(players, player){
         return true;
     }else if(stratCode == 3){
         return true;
-    }else if(stratCode == 2){
-        // do split -- add new player to game, this player divides cards with new player and both get card from deck...
-        // not using split strat grid yet so wont get this code
     }else{
         if(stratCode != 1){
             if(DEBUG){ console.log(player.type + " -------------------------------STRATCODE 9??? ", stratCode, '\n');}
@@ -408,7 +399,7 @@ function strategize(player, upcard){
     if(player.acesToUse > 0){
         stratCode = softStrat[player.points-11][upcard-1];
     }else if(player.canSplit){
-        stratCode = pairStrat[player.points-1][upcard-1]; // split stuff
+        stratCode = pairStrat[player.points-1][upcard-1]; 
     }else{
         stratCode = hardStrat[player.points-1][upcard-1];
     }
