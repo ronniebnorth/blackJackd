@@ -1,6 +1,6 @@
 // blackJackd by Ronnie North 2017
 // test blackjack strategies
-const DEBUG = true;
+const DEBUG = false;
 
 const deck = [
     11,2,3,4,5,6,7,8,9,10,10,10,10,
@@ -66,7 +66,7 @@ const hardStrat_backup = [
 
 const softStrat = [
     [9,9,9,9,9,9,9,9,9,9],
-    [0,0,0,0,0,3,0,0,0,0],
+    [9,9,9,9,9,9,9,9,9,9],
     [0,0,0,0,3,3,0,0,0,0],
     [0,0,0,0,3,3,0,0,0,0],
     [0,0,0,3,3,3,0,0,0,0],
@@ -108,15 +108,15 @@ const pairStrat = [
     [9,9,9,9,9,9,9,9,9,9],
     [1,2,2,2,2,2,1,2,2,1],
     [9,9,9,9,9,9,9,9,9,9],
-    [2,2,2,2,2,2,2,2,2,2],
+    [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1]
 ];
 
 
 console.time('testGameLoop');
-var numPlayers = 1; //100;
-var numRounds = 1; //10000000;
-var decksToUse = 1; //10;
+var numPlayers = 100;
+var numRounds = 10000000;
+var decksToUse = 10;
 var res = playRounds(numPlayers,numRounds,decksToUse,deck,hardStrat,softStrat,pairStrat);
 console.timeEnd('testGameLoop');
 console.log('WINS -----', res[0]);
@@ -222,14 +222,7 @@ function play(game){
         });
         if(DEBUG){ console.log("after dealer blackjack", nPlayers, "\n");}
     }else{
-        // check here for any players can split, get strat code, and add new players if stratcode = 2 before going into this loop
-        // //var stratCode = strategize(player, players[0].upcard);
-        spDeckPly = doSplits(deck, players);
-        
-        deck = spDeckPly[0];
-        nPlayers = spDeckPly[1];
-
-        nPlayers = nPlayers.map(function(player, ind, plyrs){
+        nPlayers = players.map(function(player, ind, plyrs){
             if(player.points == 21){
                 player.blackjack = true; 
                 return player;
@@ -246,71 +239,30 @@ function play(game){
         });
         //if(DEBUG){ console.log("after dealer non blackjack", nPlayers, "\n");}
     }
+    //console.log('yeah', nPlayers);
     return nPlayers;
-}
-
-
-function doSplits(deck, players){
-    var newPlayers = [];
-
-    players.map(function(player){
-        if(player.canSplit){
-            if(DEBUG){ console.log("player can SPLIT", player, players, "\n");}
-            var stratCode = strategize(player, players[0].upcard);
-            if(stratCode == 2){ // do split
-                if(DEBUG){ console.log("Player gets SPLIT code", player, players, "\n");}
-                var sPlayer = {type:'player',points:0,acesToUse:0,doubledDown:false,canSplit:false};
-                var splitPoints = player.points / 2;
-                sPlayer.points = splitPoints;
-                player.points = splitPoints;
-                var newcard = deck.pop();
-                 if(DEBUG){ console.log("split deal 1 ", newcard, "\n");}
-                sPlayer.points += newcard;
-                if(newcard == 11){
-                    sPlayer.acesToUse++;
-                }
-                newcard = deck.pop();
-                if(DEBUG){ console.log("split deal 2 ", newcard, "\n");}
-                player.points += newcard;
-                if(newcard == 11){
-                    player.acesToUse++;
-                }
-                player.canSplit = false;
-                newPlayers.push(sPlayer);
-                if(DEBUG){ console.log("pushed new player", sPlayer, newPlayers, "\n");}
-            }
-        }
-        newPlayers.push(player);
-    });
-    console.log("players after doing splits", newPlayers);
-    return [deck, newPlayers];
 }
 
 
 function deal(deck, players){
     var i = 0;
-    var spawnedPlayers = [];
     while(i < 2){
         players = players.map(function(player, ind, plyrs){ 
             var card = deck.pop();
+            if(card == player.points){
+                player.canSplit = true;
+            }
             var newPoints = player.points + card;
-
-
             
             var nPlayer = {
                 type:player.type, 
-                points:player.points, 
-                acesToUse:player.acesToUse,
-                canSplit:false
+                points:newPoints, 
+                acesToUse:player.acesToUse
             };
             if(i == 1 && nPlayer.type == 'dealer'){
                 nPlayer.upcard = card;
             }
-            if(nPlayer.type == "player" && card === nPlayer.points){
-                nPlayer.canSplit = true; 
-                console.log("CAN SPLIT IS TRUE!!!!!!!-----------------");
-            }
-            nPlayer.points = newPoints;
+
 			if(card === 11){ nPlayer.acesToUse++; }
             if(DEBUG){ console.log("deals " + card + " card to " + nPlayer.type, nPlayer, '\n');}
             return nPlayer;
@@ -346,6 +298,7 @@ function shuffle(arr) {
 
 
 function hit(deck, players, player){
+    // deal with doubling down around here...
     var stratCode = strategize(player, players[0].upcard);
     var card = 0;
     if(player.type == "player" && stratCode == 3){
@@ -369,6 +322,7 @@ function hit(deck, players, player){
     }
   
     if(player.points > 21){
+        //two aces, split or whatever
         player.points = 0;
     }
     return [deck, player];
@@ -389,7 +343,6 @@ function shouldHit(players, player){
         return true;
     }else if(stratCode == 2){
         // do split -- add new player to game, this player divides cards with new player and both get card from deck...
-        // not using split strat grid yet so wont get this code
     }else{
         if(stratCode != 1){
             if(DEBUG){ console.log(player.type + " -------------------------------STRATCODE 9??? ", stratCode, '\n');}
@@ -407,8 +360,8 @@ function strategize(player, upcard){
 
     if(player.acesToUse > 0){
         stratCode = softStrat[player.points-11][upcard-1];
-    }else if(player.canSplit){
-        stratCode = pairStrat[player.points-1][upcard-1]; // split stuff
+   // }else if(player.canSplit){
+   //     stratCode = pairStrat[player.points-1][upcard-1]; // split stuff
     }else{
         stratCode = hardStrat[player.points-1][upcard-1];
     }
