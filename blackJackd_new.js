@@ -1,138 +1,28 @@
 // blackJackd by Ronnie North 2017
 // test blackjack strategies
+
 const DEBUG = false;
 
-const deck = [
-    11,2,3,4,5,6,7,8,9,10,10,10,10,
-    11,2,3,4,5,6,7,8,9,10,10,10,10,
-    11,2,3,4,5,6,7,8,9,10,10,10,10,
-    11,2,3,4,5,6,7,8,9,10,10,10,10
-];
-
-// STRATEGY GRIDS (strategizer chooses from hard, soft, or pairs grid depending on player hand total and dealer upcard)
-// rows = player total (1-20) 
-// cols = dealer upcard (1-10 with 1 being the Ace card)
-// 0 = hit 
-// 1 = stand
-// 2 = split
-// 3 = double down
-
-const hardStrat = [
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,3,3,3,3,0,0,0,0],
-    [0,3,3,3,3,3,3,3,3,0],
-    [0,3,3,3,3,3,3,3,3,3],
-    [0,0,0,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]    
-];
-//sdfsdfsdfsd
-//sdfsffsdfsdf
-const hardStrat_backup = [
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,3,3,3,3,0,0,0,0],
-    [0,3,3,3,3,3,3,3,3,0],
-    [0,3,3,3,3,3,3,3,3,3],
-    [0,0,0,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [0,1,1,1,1,1,0,0,0,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]    
-];
-
-const softStrat = [
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,0,0,0,0,3,0,0,0,0],
-    [0,0,0,0,3,3,0,0,0,0],
-    [0,0,0,0,3,3,0,0,0,0],
-    [0,0,0,3,3,3,0,0,0,0],
-    [0,0,0,3,3,3,0,0,0,0],
-    [0,0,3,3,3,3,0,0,0,0],
-    [0,1,3,3,3,3,1,1,0,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,0,0,0,0,0,0,0,0,0]
-];
-
-const pairStrat = [
-    [9,9,9,9,9,9,9,9,9,9],
-    [2,2,2,2,2,2,2,2,2,2],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,2,2,2,2,2,2,0,0,0],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,2,2,2,2,2,2,0,0,0],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,0,0,0,2,2,2,0,0,0],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,3,3,3,3,3,3,3,3,0],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,2,2,2,2,2,0,0,0,0],
-    [9,9,9,9,9,9,9,9,9,9],
-    [0,2,2,2,2,2,2,0,0,0],
-    [9,9,9,9,9,9,9,9,9,9],
-    [2,2,2,2,2,2,2,2,2,2],
-    [9,9,9,9,9,9,9,9,9,9],
-    [1,2,2,2,2,2,1,2,2,1],
-    [9,9,9,9,9,9,9,9,9,9],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]
-];
-
-
 console.time('testGameLoop');
-var numPlayers = 5;
-var numRounds = 100000000;
-var decksToUse = 8;
-var res = playRounds(numPlayers,numRounds,decksToUse,deck,hardStrat,softStrat,pairStrat);
+
+const numPlayers = 1;
+const numRounds = 10000000;
+const numDecks = 8;
+
+var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
+
 console.timeEnd('testGameLoop');
+
 console.log('WINS -----', res[0]);
 console.log('LOSS -----', res[1]);
 console.log('TIES -----', res[2]);
 
 
-
-function playRounds(numPlayers, numRounds, decksToUse, deck, hardStrat, softStrat, pairStrat){
+function playRounds(numPlayers, numRounds, deck){
     var tscores = [0,0,0];
     var roundsPlayed = 0;
     while(roundsPlayed < numRounds){
-        var roundNum = roundsPlayed + 1;  
-        var ndeck = makeDeck(deck,decksToUse);
+        var ndeck = clone(deck);
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
         
         tscores = sumArrays(tscores,rscores);
@@ -153,14 +43,12 @@ function sumArrays(a1,a2){
 }
 
 
-function makeDeck(deck,decksToUse){
-    var ndeck = clone(deck);
-    var deckCount = 1;
-    while(deckCount < decksToUse){
-        ndeck = ndeck.concat(clone(deck));
-        deckCount++;
+function getFullDeck(numDecks){
+    var fullDeck = []; 
+    for(var i = 0; i < numDecks; i++){
+        fullDeck = fullDeck.concat(getOneDeck());
     }
-    return ndeck;
+    return fullDeck;
 }
 
 
@@ -179,7 +67,6 @@ function score(players){
             if(DEBUG){ console.log("player wins", scores[0], '\n');}
             if(player.blackjack === true){
                 scores[0] += .5;
-
                 if(DEBUG){ console.log("Player has blackjack", player, scores[0], '\n');}
             }
         }else if(points < dealerPoints || points == 0){ 
@@ -222,9 +109,10 @@ function play(game){
         });
         if(DEBUG){ console.log("after dealer blackjack", nPlayers, "\n");}
     }else{
-        spDeckPly = doSplits([deck, players]);
+        spDeckPly = splitPlayers([deck, players]);
         deck = spDeckPly[0];
         nPlayers = spDeckPly[1];
+
         nPlayers = nPlayers.map(function(player, ind, plyrs){
             if(player.points == 21){
                 player.blackjack = true; 
@@ -245,7 +133,7 @@ function play(game){
 }
 
 
-function doSplits(deckPlayers){
+function splitPlayers(deckPlayers){
     var deck = deckPlayers[0];
     var players = deckPlayers[1];
     var newPlayers = [];
@@ -390,27 +278,28 @@ function shouldHit(players, player){
 
 function strategize(player, upcard){
     if(DEBUG){ console.log(player.type + " strategizing", player, 'dealer upcard is ',upcard, '\n');}
-    var stratCode = 0;
+    var points = player.points - 1; // - (10 * player.acesToUse);
+    if(player.acesToUse > 0){
+        points = points - 10;
+    }
     if(upcard == 11){ upcard = 1; }
 
-    if(player.acesToUse > 0 && player.canSplit){
-        stratCode = pairStrat[player.points-11][upcard-1];
+    if(player.canSplit){
+        if(DEBUG){ console.log(player.type + " using pair strategy",points, upcard-1, '\n');}
+        return getPairStrat(points, upcard-1);
     }else if(player.acesToUse > 0){
-        stratCode = softStrat[player.points-11][upcard-1];
-    }else if(player.canSplit){
-        stratCode = pairStrat[player.points-1][upcard-1]; 
+        if(DEBUG){ console.log(player.type + " using soft strategy",points, upcard-1, '\n');}
+        return getSoftStrat(points, upcard-1);
     }else{
-        stratCode = hardStrat[player.points-1][upcard-1];
+        if(DEBUG){ console.log(player.type + " using hard strategy",points, upcard-1, '\n');}
+        return getHardStrat(points, upcard-1);
     }
-
-    return stratCode;
 }
 
 
 function playAces(player){
     if(player.points > 21){
         if(player.acesToUse > 0){
-            
             player.points -= 10;
             player.acesToUse--;
             if(DEBUG){console.log(player.type + " uses an ace ", player, "\n");}
@@ -430,4 +319,97 @@ function clargs(args){
 
 function clone(obj){
     return JSON.parse(JSON.stringify(obj));
+}
+
+
+function getOneDeck(){
+    return [
+        11,2,3,4,5,6,7,8,9,10,10,10,10,
+        11,2,3,4,5,6,7,8,9,10,10,10,10,
+        11,2,3,4,5,6,7,8,9,10,10,10,10,
+        11,2,3,4,5,6,7,8,9,10,10,10,10
+    ];
+}
+
+function getSoftStrat(points, upcard){
+    var softStrat = [
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,0,0,0,0,3,0,0,0,0],
+        [0,0,0,0,3,3,0,0,0,0],
+        [0,0,0,0,3,3,0,0,0,0],
+        [0,0,0,3,3,3,0,0,0,0],
+        [0,0,0,3,3,3,0,0,0,0],
+        [0,0,3,3,3,3,0,0,0,0],
+        [0,1,3,3,3,3,1,1,0,0],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,0,0,0,0,0,0,0,0,0]
+    ];
+    return softStrat[points][upcard];
+}
+
+
+function getHardStrat(points, upcard){
+    const hardStrat = [
+        [9,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,3,3,3,3,0,0,0,0],
+        [0,3,3,3,3,3,3,3,3,0],
+        [0,3,3,3,3,3,3,3,3,3],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1]    
+    ];
+    return hardStrat[points][upcard];
+}
+
+
+function getPairStrat(points, upcard){
+    const pairStrat = [
+        [9,9,9,9,9,9,9,9,9,9],
+        [2,2,2,2,2,2,2,2,2,2],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,2,2,2,2,2,2,0,0,0],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,2,2,2,2,2,2,0,0,0],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,0,0,0,2,2,2,0,0,0],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,3,3,3,3,3,3,3,3,0],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,2,2,2,2,2,0,0,0,0],
+        [9,9,9,9,9,9,9,9,9,9],
+        [0,2,2,2,2,2,2,0,0,0],
+        [9,9,9,9,9,9,9,9,9,9],
+        [2,2,2,2,2,2,2,2,2,2],
+        [9,9,9,9,9,9,9,9,9,9],
+        [1,2,2,2,2,2,1,2,2,1],
+        [9,9,9,9,9,9,9,9,9,9],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1]
+    ];
+    return pairStrat[points][upcard];
 }
