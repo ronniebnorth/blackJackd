@@ -5,7 +5,7 @@ const DEBUG = false;
 console.time('testGameLoop');
 
 const numPlayers = 1;
-const numRounds = 100000000;
+const numRounds = 10000000;
 const numDecks = 8;
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
@@ -19,16 +19,11 @@ console.log('TIES -----', res[2]);
 
 function playRounds(numPlayers, numRounds, deck){
     var tscores = [0,0,0];
-    var roundsPlayed = 0;
-    while(roundsPlayed < numRounds){
-        var ndeck = clone(deck);
-        var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
-        
-        tscores = sumArrays(tscores,rscores);
-        if(roundsPlayed % 100000 == 0){
+    for(var i = 0; i < numRounds; i++){
+        tscores = sumArrays(tscores,score(play(deal(shuffle(clone(deck)), createPlayers(numPlayers)))));
+        if(i % 100000 == 0){
             console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);
         }
-        roundsPlayed++;
     }
     return tscores;
 }
