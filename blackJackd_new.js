@@ -5,7 +5,7 @@ const DEBUG = false;
 console.time('testGameLoop');
 
 const numPlayers = 1;
-const numRounds = 10000000;
+const numRounds = 10000;
 const numDecks = 8;
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
@@ -48,7 +48,6 @@ function getFullDeck(numDecks){
 
 function score(players){
     var dealerPoints = players[0].points;
-    if(DEBUG){ console.log("dealer score", dealerPoints, '\n');}
     var scores = [0,0,0];
     for(var i = 1; i < players.length; i++){
         var player = players[i];
@@ -58,29 +57,23 @@ function score(players){
             if(player.doubledDown){
                 scores[0]++;
             }
-            if(DEBUG){ console.log("player wins", scores[0], '\n');}
             if(player.blackjack === true){
                 scores[0] += .5;
-                if(DEBUG){ console.log("Player has blackjack", player, scores[0], '\n');}
             }
         }else if(points < dealerPoints || points == 0){ 
             scores[1]++; 
             if(player.doubledDown){
                 scores[1]++;
             }
-            if(DEBUG){ console.log("player loses", scores[0], '\n');}
         }else if(points == dealerPoints && points != 0){ 
-            if(DEBUG){ console.log("player draw", scores[0], '\n');}
             scores[2]++; 
         }else{
             scores[1]++; 
             if(player.doubledDown){
                 scores[1]++;
-            }
-            if(DEBUG){ console.log("player loses", scores[0], '\n');}                
+            }              
         }
     }
-    if(DEBUG){ console.log("Scores ", scores, '\n');}
     return scores;
 }
 
@@ -92,7 +85,6 @@ function play(game){
     var nPlayers = [];
 
     if(dealer.points == 21){ 
-        if(DEBUG){ console.log("dealer has blackjack", "\n");}
         nPlayers = players.map(function(player){ 
             if(player.type == "player"){
                 player.points = 0;
@@ -101,7 +93,6 @@ function play(game){
                 return player;
             }
         });
-        if(DEBUG){ console.log("after dealer blackjack", nPlayers, "\n");}
     }else{
         spDeckPly = splitPlayers([deck, players]);
         deck = spDeckPly[0];
@@ -119,7 +110,6 @@ function play(game){
             var hitResults = hit(deck, players, player); 
             deck = hitResults[0];
             var newPlayer = hitResults[1];
-            if(DEBUG){ console.log(newPlayer.type + " results ", newPlayer, "\n");}
             return newPlayer;
         });
     }
@@ -133,34 +123,28 @@ function splitPlayers(deckPlayers){
     var newPlayers = [];
     players.map(function(player){
         if(player.canSplit){
-            if(DEBUG){ console.log("player can SPLIT", player, players, "\n");}
             var stratCode = strategize(player, players[0].upcard);
             if(stratCode == 2){ // do split
-                if(DEBUG){ console.log("Player gets SPLIT code", player, players, "\n");}
                 var sPlayer = createPlayer();
                 var splitPoints = player.points / 2;
                 sPlayer.points = splitPoints;
                 player.points = splitPoints;
                 var newcard = deck.pop();
-                 if(DEBUG){ console.log("split deal 1 ", newcard, "\n");}
                 sPlayer.points += newcard;
                 if(newcard == 11){
                     sPlayer.acesToUse++;
                 }
                 newcard = deck.pop();
-                if(DEBUG){ console.log("split deal 2 ", newcard, "\n");}
                 player.points += newcard;
                 if(newcard == 11){
                     player.acesToUse++;
                 }
                 player.canSplit = false;
                 newPlayers.push(sPlayer);
-                if(DEBUG){ console.log("pushed new player", sPlayer, newPlayers, "\n");}
             }
         }
         newPlayers.push(player);
     });
-    if(DEBUG){console.log("players after doing splits", newPlayers);}
     return [deck, newPlayers];
 }
 
@@ -182,11 +166,9 @@ function deal(deck, players){
             }
             if(nPlayer.type == "player" && card === nPlayer.points){
                 nPlayer.canSplit = true; 
-                if(DEBUG){console.log("CAN SPLIT IS TRUE!!!!!!!-----------------");}
             }
             nPlayer.points = newPoints;
 			if(card === 11){ nPlayer.acesToUse++; }
-            if(DEBUG){ console.log("deals " + card + " card to " + nPlayer.type, nPlayer, '\n');}
             return nPlayer;
         });
         i++;
@@ -233,12 +215,10 @@ function hit(deck, players, player){
     var card = 0;
     if(player.type == "player" && stratCode == 3){
         player.doubledDown = true;
-        if(DEBUG){ console.log(player.type + " doubled down", player, '\n');}
         card = deck.pop();
         
         player.points += card;
         if(card == 11){ player.acesToUse++; }
-        if(DEBUG){ console.log(player.type + " hits after double down and gets a " + card, player, '\n');}
         player = playAces(player);
     }else{
         while(player.points < 21 && shouldHit(players, player)){
@@ -246,7 +226,6 @@ function hit(deck, players, player){
             
             player.points += card;
             if(card == 11){ player.acesToUse++; }
-            if(DEBUG){ console.log(player.type + " hits and gets a " + card, player, '\n');}
             player = playAces(player);
         } 
     }
@@ -270,7 +249,6 @@ function shouldHit(players, player){
 
 
 function strategize(player, upcard){
-    if(DEBUG){ console.log(player.type + " strategizing", player, 'dealer upcard is ',upcard, '\n');}
     var points = player.points - 1;
     if(player.acesToUse > 0){
         points = points - 10;
@@ -278,13 +256,10 @@ function strategize(player, upcard){
     if(upcard == 11){ upcard = 1; }
 
     if(player.canSplit){
-        if(DEBUG){ console.log(player.type + " using pair strategy",points, upcard-1, '\n');}
         return getPairStrat(points, upcard-1);
     }else if(player.acesToUse > 0){
-        if(DEBUG){ console.log(player.type + " using soft strategy",points, upcard-1, '\n');}
         return getSoftStrat(points, upcard-1);
     }else{
-        if(DEBUG){ console.log(player.type + " using hard strategy",points, upcard-1, '\n');}
         return getHardStrat(points, upcard-1);
     }
 }
@@ -295,7 +270,6 @@ function playAces(player){
         if(player.acesToUse > 0){
             player.points -= 10;
             player.acesToUse--;
-            if(DEBUG){console.log(player.type + " uses an ace ", player, "\n");}
         }
     }
     return player;

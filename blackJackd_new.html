@@ -1,11 +1,13 @@
-   // blackJackd Strategy Tester by Ronnie North 2017
+<html>
+<script>
+// blackJackd Strategy Tester by Ronnie North 2017
 
 const DEBUG = false;
 
 console.time('testGameLoop');
 
 const numPlayers = 1;
-const numRounds = 1000000; //100000000;
+const numRounds = 100000;
 const numDecks = 8;
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
@@ -19,16 +21,11 @@ console.log('TIES -----', res[2]);
 
 function playRounds(numPlayers, numRounds, deck){
     var tscores = [0,0,0];
-    var roundsPlayed = 0;
-    while(roundsPlayed < numRounds){
-        var ndeck = clone(deck);
-        var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
-        
-        tscores = sumArrays(tscores,rscores);
-        if(roundsPlayed % 100000 == 0){
+    for(var i = 0; i < numRounds; i++){
+        tscores = sumArrays(tscores,score(play(deal(shuffle(clone(deck)), createPlayers(numPlayers)))));
+        if(i % 100000 == 0){
             console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);
         }
-        roundsPlayed++;
     }
     return tscores;
 }
@@ -76,7 +73,7 @@ function score(players){
             scores[1]++; 
             if(player.doubledDown){
                 scores[1]++;
-            }            
+            }              
         }
     }
     return scores;
@@ -154,28 +151,27 @@ function splitPlayers(deckPlayers){
 }
 
 
-function adjustPlayer(i,dp){
-    deck = dp[0];
-    var nPlayer = dp[1];
-    var card = dp[2];
-    if(i == 1 && nPlayer.type == 'dealer'){
-        nPlayer.upcard = card;
-    }
-    if(nPlayer.type == "player" && i==1 && card === nPlayer.points / 2){
-        nPlayer.canSplit = true; 
-    }
-    return [deck,nPlayer];
-}
-
-
-function deal(ideck, players){
+function deal(deck, players){
     var i = 0;
-    var deck = clone(ideck);
     while(i < 2){
         players = players.map(function(player){ 
-            var dp = adjustPlayer(i,giveCard(deck, player));
-            deck = dp[0];
-            return dp[1];
+            var card = deck.pop();
+            var newPoints = player.points + card;  
+            var nPlayer = {
+                type:player.type, 
+                points:player.points, 
+                acesToUse:player.acesToUse,
+                canSplit:false
+            };
+            if(i == 1 && nPlayer.type == 'dealer'){
+                nPlayer.upcard = card;
+            }
+            if(nPlayer.type == "player" && card === nPlayer.points){
+                nPlayer.canSplit = true; 
+            }
+            nPlayer.points = newPoints;
+			if(card === 11){ nPlayer.acesToUse++; }
+            return nPlayer;
         });
         i++;
     }
@@ -216,30 +212,23 @@ function shuffle(arr) {
 }
 
 
-function giveCard(deck, player){
-    var card = deck.pop();
-    
-    player.points += card;
-    if(card == 11){ player.acesToUse++; }
-    player = playAces(player);
-    return [deck,player,card];
-}
-
 function hit(deck, players, player){
     var stratCode = strategize(player, players[0].upcard);
     var card = 0;
-    var dp = [];
     if(player.type == "player" && stratCode == 3){
         player.doubledDown = true;
-        dp = giveCard(deck, player);
-        deck = dp[0];
-        player = dp[1];
+        card = deck.pop();
         
+        player.points += card;
+        if(card == 11){ player.acesToUse++; }
+        player = playAces(player);
     }else{
         while(player.points < 21 && shouldHit(players, player)){
-            dp = giveCard(deck, player);
-            deck = dp[0];
-            player = dp[1];
+            card = deck.pop();
+            
+            player.points += card;
+            if(card == 11){ player.acesToUse++; }
+            player = playAces(player);
         } 
     }
     if(player.points > 21){
@@ -393,4 +382,5 @@ function getPairStrat(points, upcard){
     ];
     return pairStrat[points][upcard];
 }
-
+</script>
+</html>
