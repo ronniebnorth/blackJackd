@@ -1,20 +1,9 @@
-break it down
-clean it up
-put in splits
-put in blackjacks
 time with curried functions // done, made no diff 
 change grid codes
 grid editor
 save data instead of consoling it out
 add betting
 brute force array guesser
-
-
-standing on 16 when dealer has ace upcard, should be 17?
-
-
-hit split aces variable needed
-resplit times variable
 
 
 
