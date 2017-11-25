@@ -31,6 +31,12 @@ Then run it with
 node blackJackd_vX.js
 
 
+
+The results show:
+[ win, loss, tie ]  win percentage
+
+
+
 ```
 node blackJackd_v2.js
 
