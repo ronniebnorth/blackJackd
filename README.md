@@ -14,8 +14,11 @@ Supports pretty much everything:
 To use, update these variables in the blackJackd_vX.js file.
 
 const DEBUG = false; // true will output a whole bunch of stuff
+
 const numPlayers = 1;
+
 const numRounds = 1000000; // it takes about 1 minute to run one million rounds on my laptop
+
 const numDecks = 8;
 
 
