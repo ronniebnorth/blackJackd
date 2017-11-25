@@ -27,10 +27,12 @@ const outputInterval = 100000; // how often to show results snapshot
 
 
 
-Then run it with
+Then run it and sit back and wait
 ```
 node blackJackd_vX.js
 ```
+
+Alternatively, open the blackJackd_vX.html file in Chrome, input the game values, and view results in console.
 
 
 The results show:
