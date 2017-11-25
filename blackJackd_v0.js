@@ -1,4 +1,4 @@
-// blackJackd by Ronnie North 2017
+
 // test blackjack strategies
 const DEBUG = false;
 
@@ -10,9 +10,9 @@ const deck = [
 ];
 
 // STRATEGY GRIDS (strategizer chooses from hard, soft, or pairs grid depending on player hand total and dealer upcard)
-// rows = player total (1-20) 
+// rows = player total (1-20)
 // cols = dealer upcard (1-10 with 1 being the Ace card)
-// 0 = hit 
+// 0 = hit
 // 1 = stand
 // 2 = split
 // 3 = double down
@@ -38,7 +38,7 @@ const hardStrat = [
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]    
+    [1,1,1,1,1,1,1,1,1,1]
 ];
 //sdfsdfsdfsd
 //sdfsffsdfsdf
@@ -63,7 +63,7 @@ const hardStrat_backup = [
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]    
+    [1,1,1,1,1,1,1,1,1,1]
 ];
 
 const softStrat = [
@@ -131,10 +131,10 @@ function playRounds(numPlayers, numRounds, decksToUse, deck, hardStrat, softStra
     var tscores = [0,0,0];
     var roundsPlayed = 0;
     while(roundsPlayed < numRounds){
-        var roundNum = roundsPlayed + 1;  
+        var roundNum = roundsPlayed + 1;
         var ndeck = makeDeck(deck,decksToUse);
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
-        
+
         tscores = sumArrays(tscores,rscores);
         if(roundsPlayed % 100000 == 0){
             if(!DEBUG){console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);}
@@ -171,8 +171,8 @@ function score(players){
     for(var i = 1; i < players.length; i++){
         var player = players[i];
         var points = player.points;
-        if(points > dealerPoints || player.blackjack == true){ 
-            scores[0]++; 
+        if(points > dealerPoints || player.blackjack == true){
+            scores[0]++;
             if(player.doubledDown){
                 scores[0]++;
             }
@@ -182,21 +182,21 @@ function score(players){
 
                 if(DEBUG){ console.log("Player has blackjack", player, scores[0], '\n');}
             }
-        }else if(points < dealerPoints || points == 0){ 
-            scores[1]++; 
+        }else if(points < dealerPoints || points == 0){
+            scores[1]++;
             if(player.doubledDown){
                 scores[1]++;
             }
             if(DEBUG){ console.log("player loses", scores[0], '\n');}
-        }else if(points == dealerPoints && points != 0){ 
+        }else if(points == dealerPoints && points != 0){
             if(DEBUG){ console.log("player draw", scores[0], '\n');}
-            scores[2]++; 
+            scores[2]++;
         }else{
-            scores[1]++; 
+            scores[1]++;
             if(player.doubledDown){
                 scores[1]++;
             }
-            if(DEBUG){ console.log("player loses", scores[0], '\n');}                
+            if(DEBUG){ console.log("player loses", scores[0], '\n');}
         }
     }
     if(DEBUG){ console.log("Scores ", scores, '\n');}
@@ -210,9 +210,9 @@ function play(game){
     var dealer = players[0];
     var nPlayers = [];
 
-    if(dealer.points == 21){ 
+    if(dealer.points == 21){
         if(DEBUG){ console.log("dealer has blackjack", "\n");}
-        nPlayers = players.map(function(player){ 
+        nPlayers = players.map(function(player){
             if(player.type == "player"){
                 player.points = 0;
                 return player;
@@ -227,14 +227,14 @@ function play(game){
         nPlayers = spDeckPly[1];
         nPlayers = nPlayers.map(function(player, ind, plyrs){
             if(player.points == 21){
-                player.blackjack = true; 
+                player.blackjack = true;
                 return player;
             }
             if(player.points == 22){
                 player.acesToUse--;
-                player.points = 12; 
+                player.points = 12;
             }
-            var hitResults = hit(deck, players, player); 
+            var hitResults = hit(deck, players, player);
             deck = hitResults[0];
             var newPlayer = hitResults[1];
             if(DEBUG){ console.log(newPlayer.type + " results ", newPlayer, "\n");}
@@ -286,12 +286,12 @@ function doSplits(deckPlayers){
 function deal(deck, players){
     var i = 0;
     while(i < 2){
-        players = players.map(function(player){ 
+        players = players.map(function(player){
             var card = deck.pop();
-            var newPoints = player.points + card;  
+            var newPoints = player.points + card;
             var nPlayer = {
-                type:player.type, 
-                points:player.points, 
+                type:player.type,
+                points:player.points,
                 acesToUse:player.acesToUse,
                 canSplit:false
             };
@@ -299,7 +299,7 @@ function deal(deck, players){
                 nPlayer.upcard = card;
             }
             if(nPlayer.type == "player" && card === nPlayer.points){
-                nPlayer.canSplit = true; 
+                nPlayer.canSplit = true;
                 if(DEBUG){console.log("CAN SPLIT IS TRUE!!!!!!!-----------------");}
             }
             nPlayer.points = newPoints;
@@ -353,7 +353,7 @@ function hit(deck, players, player){
         player.doubledDown = true;
         if(DEBUG){ console.log(player.type + " doubled down", player, '\n');}
         card = deck.pop();
-        
+
         player.points += card;
         if(card == 11){ player.acesToUse++; }
         if(DEBUG){ console.log(player.type + " hits after double down and gets a " + card, player, '\n');}
@@ -361,14 +361,14 @@ function hit(deck, players, player){
     }else{
         while(player.points < 21 && shouldHit(players, player)){
             card = deck.pop();
-            
+
             player.points += card;
             if(card == 11){ player.acesToUse++; }
             if(DEBUG){ console.log(player.type + " hits and gets a " + card, player, '\n');}
             player = playAces(player);
-        } 
+        }
     }
-  
+
     if(player.points > 21){
         player.points = 0;
     }
@@ -398,7 +398,7 @@ function strategize(player, upcard){
     }else if(player.acesToUse > 0){
         stratCode = softStrat[player.points-11][upcard-1];
     }else if(player.canSplit){
-        stratCode = pairStrat[player.points-1][upcard-1]; 
+        stratCode = pairStrat[player.points-1][upcard-1];
     }else{
         stratCode = hardStrat[player.points-1][upcard-1];
     }
@@ -410,7 +410,7 @@ function strategize(player, upcard){
 function playAces(player){
     if(player.points > 21){
         if(player.acesToUse > 0){
-            
+
             player.points -= 10;
             player.acesToUse--;
             if(DEBUG){console.log(player.type + " uses an ace ", player, "\n");}

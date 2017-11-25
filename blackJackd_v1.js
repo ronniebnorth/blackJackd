@@ -1,4 +1,3 @@
-// blackJackd Strategy Tester by Ronnie North 2017
 
 const DEBUG = false;
 
@@ -38,7 +37,7 @@ function sumArrays(a1,a2){
 
 
 function getFullDeck(numDecks){
-    var fullDeck = []; 
+    var fullDeck = [];
     for(var i = 0; i < numDecks; i++){
         fullDeck = fullDeck.concat(getOneDeck());
     }
@@ -52,26 +51,26 @@ function score(players){
     for(var i = 1; i < players.length; i++){
         var player = players[i];
         var points = player.points;
-        if(points > dealerPoints || player.blackjack == true){ 
-            scores[0]++; 
+        if(points > dealerPoints || player.blackjack == true){
+            scores[0]++;
             if(player.doubledDown){
                 scores[0]++;
             }
             if(player.blackjack === true){
                 scores[0] += .5;
             }
-        }else if(points < dealerPoints || points == 0){ 
-            scores[1]++; 
+        }else if(points < dealerPoints || points == 0){
+            scores[1]++;
             if(player.doubledDown){
                 scores[1]++;
             }
-        }else if(points == dealerPoints && points != 0){ 
-            scores[2]++; 
+        }else if(points == dealerPoints && points != 0){
+            scores[2]++;
         }else{
-            scores[1]++; 
+            scores[1]++;
             if(player.doubledDown){
                 scores[1]++;
-            }              
+            }
         }
     }
     return scores;
@@ -84,8 +83,8 @@ function play(game){
     var dealer = players[0];
     var nPlayers = [];
 
-    if(dealer.points == 21){ 
-        nPlayers = players.map(function(player){ 
+    if(dealer.points == 21){
+        nPlayers = players.map(function(player){
             if(player.type == "player"){
                 player.points = 0;
                 return player;
@@ -100,14 +99,14 @@ function play(game){
 
         nPlayers = nPlayers.map(function(player, ind, plyrs){
             if(player.points == 21){
-                player.blackjack = true; 
+                player.blackjack = true;
                 return player;
             }
             if(player.points == 22){
                 player.acesToUse--;
-                player.points = 12; 
+                player.points = 12;
             }
-            var hitResults = hit(deck, players, player); 
+            var hitResults = hit(deck, players, player);
             deck = hitResults[0];
             var newPlayer = hitResults[1];
             return newPlayer;
@@ -152,12 +151,12 @@ function splitPlayers(deckPlayers){
 function deal(deck, players){
     var i = 0;
     while(i < 2){
-        players = players.map(function(player){ 
+        players = players.map(function(player){
             var card = deck.pop();
-            var newPoints = player.points + card;  
+            var newPoints = player.points + card;
             var nPlayer = {
-                type:player.type, 
-                points:player.points, 
+                type:player.type,
+                points:player.points,
                 acesToUse:player.acesToUse,
                 canSplit:false
             };
@@ -165,7 +164,7 @@ function deal(deck, players){
                 nPlayer.upcard = card;
             }
             if(nPlayer.type == "player" && card === nPlayer.points){
-                nPlayer.canSplit = true; 
+                nPlayer.canSplit = true;
             }
             nPlayer.points = newPoints;
 			if(card === 11){ nPlayer.acesToUse++; }
@@ -216,18 +215,18 @@ function hit(deck, players, player){
     if(player.type == "player" && stratCode == 3){
         player.doubledDown = true;
         card = deck.pop();
-        
+
         player.points += card;
         if(card == 11){ player.acesToUse++; }
         player = playAces(player);
     }else{
         while(player.points < 21 && shouldHit(players, player)){
             card = deck.pop();
-            
+
             player.points += card;
             if(card == 11){ player.acesToUse++; }
             player = playAces(player);
-        } 
+        }
     }
     if(player.points > 21){
         player.points = 0;
@@ -348,7 +347,7 @@ function getHardStrat(points, upcard){
         [1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1]    
+        [1,1,1,1,1,1,1,1,1,1]
     ];
     return hardStrat[points][upcard];
 }

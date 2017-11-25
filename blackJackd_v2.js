@@ -1,4 +1,3 @@
-   // blackJackd Strategy Tester by Ronnie North 2017
 
 const DEBUG = false; // will output a whole bunch of stuff if true
 

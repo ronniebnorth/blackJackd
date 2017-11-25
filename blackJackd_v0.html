@@ -1,6 +1,6 @@
 <html>
 <script>
-// blackJackd by Ronnie North 2017
+
 // test blackjack strategies
 
 const deck = [
@@ -11,9 +11,9 @@ const deck = [
 ];
 
 // STRATEGY GRIDS (strategizer chooses from hard, soft, or pairs grid depending on player hand total and dealer upcard)
-// rows = player total (1-20) 
+// rows = player total (1-20)
 // cols = dealer upcard (1-10 with 1 being the Ace card)
-// 0 = hit 
+// 0 = hit
 // 1 = stand
 // 2 = split
 // 3 = double down
@@ -38,7 +38,7 @@ const hardStrat = [
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]    
+    [1,1,1,1,1,1,1,1,1,1]
 ];
 
 const hardStrat_backup = [
@@ -62,7 +62,7 @@ const hardStrat_backup = [
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]    
+    [1,1,1,1,1,1,1,1,1,1]
 ];
 
 const softStrat = [
@@ -129,7 +129,7 @@ function playRounds(numPlayers, numRounds, decksToUse, deck, hardStrat, softStra
     var tscores = [0,0,0];
     var roundsPlayed = 0;
     while(roundsPlayed < numRounds){
-        var roundNum = roundsPlayed + 1;  
+        var roundNum = roundsPlayed + 1;
         var ndeck = makeDeck(deck,decksToUse);
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
         tscores = sumArrays(tscores,rscores);
@@ -164,12 +164,12 @@ function score(players){
     players.map(function(player, index){
         var score = player.points;
         if(player.type != 'dealer'){
-            if(score > dealerScore){ 
-                scores[0]++; 
-            }else if(score < dealerScore || score == 0){ 
-                scores[1]++; 
-            }else if(score == dealerScore && score != 0){ 
-                scores[2]++; 
+            if(score > dealerScore){
+                scores[0]++;
+            }else if(score < dealerScore || score == 0){
+                scores[1]++;
+            }else if(score == dealerScore && score != 0){
+                scores[2]++;
             }
         }
     });
@@ -181,7 +181,7 @@ function play(game){
     var deck = game[0];
     var players = game[1];
     var newPlayers = players.map(function(player, ind, plyrs){
-        var hitResults = hit(deck, players, player); 
+        var hitResults = hit(deck, players, player);
         deck = hitResults[0];
         var newPlayer = hitResults[1];
         return newPlayer;
@@ -193,11 +193,11 @@ function play(game){
 function deal(deck, players){
     var i = 0;
     while(i < 2){
-        players = players.map(function(player, ind, plyrs){ 
+        players = players.map(function(player, ind, plyrs){
             var card = deck.pop();
             var nPlayer = {
-                type:player.type, 
-                points:player.points + card, 
+                type:player.type,
+                points:player.points + card,
                 acesToUse:player.acesToUse
             };
             if(i == 1 && nPlayer.type == 'dealer'){
@@ -237,13 +237,13 @@ function shuffle(arr) {
 
 
 function hit(deck, players, player){
-    // todo: if player has blackjack 
+    // todo: if player has blackjack
     while(player.points < 21 && shouldHit(players, player)){
         var card = deck.pop();
         player.points += card;
         if(card == 11){ player.acesToUse++; }
         player = playAces(player);
-    }   
+    }
     if(player.points > 21){
         player.points = 0;
     }
