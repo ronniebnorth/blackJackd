@@ -1,7 +1,13 @@
-add betting
-brute force array guesser
 check out re-splitting
 
 have html just include the JS, code in two places now
 
 improve html interface
+
+put console messages in page
+
+build an editor for the strategy grids, could be real-time
+
+brute force array guesser
+
+integrate machine learning
