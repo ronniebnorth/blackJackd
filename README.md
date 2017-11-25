@@ -2,14 +2,15 @@
 
 Blackjack simulator in Javascript.
 
-Supports pretty much everything:
-* uses basic strategy
+Supports pretty much everything (except re-splitting and insurance):
+* dealer stands on any 17 (hard or soft)
 * multi-player
-* splitting
+* players use basic strategy
+* player splitting
 * player blackjack pays 3 to 2
 * dealer blackjack wins (unless a player also has blackjack then they push)
 * double doubling down doubles the winnings
-* Results show house advantage of .5 percent, so it's accurate
+* Results show (after about 1 million rounds) a house advantage of .5 percent, so it's accurate
 
 
 
