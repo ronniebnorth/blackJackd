@@ -14,7 +14,11 @@ Supports pretty much everything (except re-splitting and insurance):
 
 
 
-To use, update these variables in the blackJackd_vX.js file.
+To use, open the blackJackd_vX.html file in Chrome, input the game values, and view results in console.
+
+Alternatively, you can use Node instead of running in the browser, both are equally fast.
+
+To use with Node, update these variables in the blackJackd_vX.js file.
 
 ```
 const DEBUG = false; // will output a whole bunch of stuff if true
@@ -32,8 +36,6 @@ Then run it and sit back and wait
 ```
 node blackJackd_vX.js
 ```
-
-Alternatively, open the blackJackd_vX.html file in Chrome, input the game values, and view results in console.
 
 
 The results show:
