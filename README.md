@@ -14,7 +14,7 @@ Supports pretty much everything (except re-splitting and insurance):
 
 To use, open the blackJackd_vX.html file in Chrome, input the game values, and view results in console.   
 
-    
+<br><br>    <br><br><br><br>
 Alternatively, you can use Node instead of running in the browser, both are equally fast.
 
 To use with Node, update these variables in the blackJackd_vX.js file.
