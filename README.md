@@ -11,6 +11,7 @@ Supports pretty much everything (except re-splitting and insurance):
 * dealer blackjack wins (unless a player also has blackjack then they push)
 * double doubling down doubles the winnings
 * Results show (after about 1 million rounds) a house advantage of .5 percent, so it's accurate
+
 <br><br>
 To use, open the blackJackd_vX.html file in Chrome, input the game values, and view results in console.   
 
