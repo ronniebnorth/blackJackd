@@ -6,9 +6,11 @@ Supports pretty much everything:
 * uses basic strategy
 * multi-player
 * splitting
-* player blackjack
-* dealer blackjack (if player also has blackjack then push)
-* double doubling down
+* player blackjack pays 3 to 2
+* dealer blackjack wins (unless a player also has blackjack then they push)
+* double doubling down doubles the winnings
+* Results show house advantage of .5 percent, so it's accurate
+
 
 
 To use, update these variables in the blackJackd_vX.js file.
