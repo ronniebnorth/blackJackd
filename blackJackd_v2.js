@@ -1,13 +1,13 @@
    // blackJackd Strategy Tester by Ronnie North 2017
 
-console.time('testGameLoop');
-
 const DEBUG = false; // will output a whole bunch of stuff if true
 
 const numPlayers = 1; // use as many as you want
 const numRounds = 1000000; //100000000;
 const numDecks = 8;
 const outputInterval = 100000; // how often to show results snapshot
+
+console.time('testGameLoop');
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
 
