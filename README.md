@@ -31,7 +31,7 @@ Then run it with
 node blackJackd_vX.js
 
 
-`
+```
 node blackJackd_v2.js
 
 [ 0, 1, 0 ] 0
@@ -48,4 +48,4 @@ testGameLoop: 59498.218ms
 WINS ----- 521530.5
 LOSS ----- 532501
 TIES ----- 84784
-`
+```
