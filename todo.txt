@@ -1,3 +1,7 @@
 add betting
 brute force array guesser
 check out re-splitting
+
+have html just include the JS, code in two places now
+
+improve html interface

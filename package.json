@@ -20,6 +20,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "cluster": "^0.7.7",
+    "formBuilder": "^2.9.8",
     "gpu.js": "^1.0.0-rc.8",
     "io": "^0.1.10",
     "node-couchdb": "^1.2.0",
