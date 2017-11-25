@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 <html>
     <script src="https://code.jquery.com/jquery-latest.min.js"
         type="text/javascript"></script>
@@ -34,7 +38,7 @@
               id="btnStart">Run!</button>
           </div>
           <div class="fb-button form-group field-button-1511625725834">
-            <p id="control-7687091">Results..</p>
+            <p id="control-7687091">View live results in console..</p>
             <label for="wins" class="fb-number-label">Wins: <span id="wins"></span><br>
             <label for="loss">Loss: <span id="loss"></span><br>
             <label for="tie">Tie: <span id="tie"></span><br><br>
@@ -53,9 +57,9 @@ const DEBUG = false;
 
 $(function() {
     $( "#btnStart" ).click(function() {
-        $(this).attr("disabled", true);
-        start();
-        $(this).attr("disabled", false);
+
+          start();
+
     });
 });
 
@@ -89,6 +93,7 @@ function start(){
     $("#tie").text(totTie);
     var percentage = (totWins/(totWins+totLoss)) * 100;
     $("#percentage").text(percentage + ' %');
+
 }
 
 
