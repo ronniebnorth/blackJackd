@@ -2,6 +2,8 @@
 
 Blackjack simulator in Javascript.
 
+[try it](https://ronniebnorth.github.io/blackJackd_v2.html)
+
 Work in progress.. but functional. Please let me know if you see any ways to make it even faster!
 
 Supports pretty much everything (except re-splitting and insurance):
