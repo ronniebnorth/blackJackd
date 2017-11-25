@@ -14,10 +14,10 @@ Supports pretty much everything (except re-splitting and insurance):
 * double doubling down doubles the winnings
 * Results show (after about 1 million rounds) a house advantage of .5 percent, so it's accurate
 
-<br><br>
+<br>
 To use, open the blackJackd_vX.html file in Chrome, input the game values, and view results in console.   
 
-<br><br><br>
+<br><br>
 Alternatively, you can use Node instead of running in the browser, both are equally fast.
 
 To use with Node, update these variables in the blackJackd_vX.js file.
