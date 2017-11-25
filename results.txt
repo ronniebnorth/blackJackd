@@ -1,4 +1,4 @@
-node blackJackd_new2.js
+node blackJackd_v2.js
 
 [ 0, 1, 0 ] 0
 [ 51785, 53694, 8453 ] 49.09508053735815
