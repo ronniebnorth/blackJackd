@@ -2,6 +2,8 @@
 
 Blackjack simulator in Javascript.
 
+Work in progress.. but functional. Please let me know if you see any ways to make it even faster!
+
 Supports pretty much everything (except re-splitting and insurance):
 * dealer stands on any 17 (hard or soft)
 * multi-player
