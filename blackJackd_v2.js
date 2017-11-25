@@ -1,12 +1,13 @@
    // blackJackd Strategy Tester by Ronnie North 2017
 
-const DEBUG = false;
-
 console.time('testGameLoop');
 
-const numPlayers = 1;
+const DEBUG = false; // will output a whole bunch of stuff if true
+
+const numPlayers = 1; // use as many as you want
 const numRounds = 1000000; //100000000;
 const numDecks = 8;
+const outputInterval = 100000; // how often to show results snapshot
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
 
@@ -25,7 +26,7 @@ function playRounds(numPlayers, numRounds, deck){
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
 
         tscores = sumArrays(tscores,rscores);
-        if(roundsPlayed % 100000 == 0){
+        if(roundsPlayed > 10 && roundsPlayed % outputInterval == 0){
             console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);
         }
         roundsPlayed++;
