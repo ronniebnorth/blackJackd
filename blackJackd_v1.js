@@ -5,7 +5,7 @@ const DEBUG = false;
 console.time('testGameLoop');
 
 const numPlayers = 1;
-const numRounds = 10000;
+const numRounds = 1000000;
 const numDecks = 8;
 
 var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));

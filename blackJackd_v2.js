@@ -23,7 +23,7 @@ function playRounds(numPlayers, numRounds, deck){
     while(roundsPlayed < numRounds){
         var ndeck = clone(deck);
         var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
-        
+
         tscores = sumArrays(tscores,rscores);
         if(roundsPlayed % 100000 == 0){
             console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);
@@ -43,7 +43,7 @@ function sumArrays(a1,a2){
 
 
 function getFullDeck(numDecks){
-    var fullDeck = []; 
+    var fullDeck = [];
     for(var i = 0; i < numDecks; i++){
         fullDeck = fullDeck.concat(getOneDeck());
     }
@@ -57,26 +57,26 @@ function score(players){
     for(var i = 1; i < players.length; i++){
         var player = players[i];
         var points = player.points;
-        if(points > dealerPoints || player.blackjack == true){ 
-            scores[0]++; 
+        if(points > dealerPoints || player.blackjack == true){
+            scores[0]++;
             if(player.doubledDown){
                 scores[0]++;
             }
             if(player.blackjack === true){
                 scores[0] += .5;
             }
-        }else if(points < dealerPoints || points == 0){ 
-            scores[1]++; 
+        }else if(points < dealerPoints || points == 0){
+            scores[1]++;
             if(player.doubledDown){
                 scores[1]++;
             }
-        }else if(points == dealerPoints && points != 0){ 
-            scores[2]++; 
+        }else if(points == dealerPoints && points != 0){
+            scores[2]++;
         }else{
-            scores[1]++; 
+            scores[1]++;
             if(player.doubledDown){
                 scores[1]++;
-            }            
+            }
         }
     }
     return scores;
@@ -89,8 +89,8 @@ function play(game){
     var dealer = players[0];
     var nPlayers = [];
 
-    if(dealer.points == 21){ 
-        nPlayers = players.map(function(player){ 
+    if(dealer.points == 21){
+        nPlayers = players.map(function(player){
             if(player.type == "player"){
                 player.points = 0;
                 return player;
@@ -105,14 +105,14 @@ function play(game){
 
         nPlayers = nPlayers.map(function(player, ind, plyrs){
             if(player.points == 21){
-                player.blackjack = true; 
+                player.blackjack = true;
                 return player;
             }
             if(player.points == 22){
                 player.acesToUse--;
-                player.points = 12; 
+                player.points = 12;
             }
-            var hitResults = hit(deck, players, player); 
+            var hitResults = hit(deck, players, player);
             deck = hitResults[0];
             var newPlayer = hitResults[1];
             return newPlayer;
@@ -162,7 +162,7 @@ function adjustPlayer(i,dp){
         nPlayer.upcard = card;
     }
     if(nPlayer.type == "player" && i==1 && card === nPlayer.points / 2){
-        nPlayer.canSplit = true; 
+        nPlayer.canSplit = true;
     }
     return [deck,nPlayer];
 }
@@ -172,7 +172,7 @@ function deal(ideck, players){
     var i = 0;
     var deck = clone(ideck);
     while(i < 2){
-        players = players.map(function(player){ 
+        players = players.map(function(player){
             var dp = adjustPlayer(i,giveCard(deck, player));
             deck = dp[0];
             return dp[1];
@@ -218,7 +218,7 @@ function shuffle(arr) {
 
 function giveCard(deck, player){
     var card = deck.pop();
-    
+
     player.points += card;
     if(card == 11){ player.acesToUse++; }
     player = playAces(player);
@@ -234,13 +234,13 @@ function hit(deck, players, player){
         dp = giveCard(deck, player);
         deck = dp[0];
         player = dp[1];
-        
+
     }else{
         while(player.points < 21 && shouldHit(players, player)){
             dp = giveCard(deck, player);
             deck = dp[0];
             player = dp[1];
-        } 
+        }
     }
     if(player.points > 21){
         player.points = 0;
@@ -361,7 +361,7 @@ function getHardStrat(points, upcard){
         [1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1]    
+        [1,1,1,1,1,1,1,1,1,1]
     ];
     return hardStrat[points][upcard];
 }
@@ -393,4 +393,3 @@ function getPairStrat(points, upcard){
     ];
     return pairStrat[points][upcard];
 }
-

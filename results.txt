@@ -1,48 +1,16 @@
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 4206585
-LOSS ----- 4896993
-TIES ----- 896422
-testGameLoop: 16284.163ms
+node blackJackd_new2.js
 
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 42078934
-LOSS ----- 48963665
-TIES ----- 8957401
-testGameLoop: 161985.342ms
-
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 420371312
-LOSS ----- 490044059
-TIES ----- 89584629
-testGameLoop: 1647276.394ms
-
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 420401675
-LOSS ----- 489992088
-TIES ----- 89606237
-testGameLoop: 1634782.558ms
-
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 420377568
-LOSS ----- 490041134
-TIES ----- 89581298
-testGameLoop: 1614623.568ms
-
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 420075691
-LOSS ----- 490557049
-TIES ----- 89367260
-testGameLoop: 1631902.407ms
-
-C:\Users\GUS\blackJackd (master) (blackJackd@1.0.0)
-λ node blackJackd.js
-WINS ----- 420142991
-LOSS ----- 490486701
-TIES ----- 89370308
-testGameLoop: 1607024.928ms
+[ 0, 1, 0 ] 0
+[ 51785, 53694, 8453 ] 49.09508053735815
+[ 104079.5, 106828, 16854 ] 49.34841103327288
+[ 156301, 159995, 25317 ] 49.416053317145966
+[ 208501, 213133, 33912 ] 49.4507084343293
+[ 260481.5, 266413, 42442 ] 49.43712640765846
+[ 312732.5, 319571, 51024 ] 49.45923911539316
+[ 365097.5, 372571, 59597 ] 49.493437770489045
+[ 417079.5, 425984, 67901 ] 49.47189624506339
+[ 469282, 479211, 76408 ] 49.47659076029027
+testGameLoop: 59498.218ms
+WINS ----- 521530.5
+LOSS ----- 532501
+TIES ----- 84784
