@@ -1,20 +1,44 @@
 
-const DEBUG = false; // will output a whole bunch of stuff if true
+$(function() {
+    $( "#btnStart" ).click(function() {
 
-const numPlayers = 1; // use as many as you want
-const numRounds = 1000000; //100000000;
-const numDecks = 8;
-const outputInterval = 100000; // how often to show results snapshot
+          start();
 
-console.time('testGameLoop');
+    });
+});
 
-var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
 
-console.timeEnd('testGameLoop');
 
-console.log('WINS -----', res[0]);
-console.log('LOSS -----', res[1]);
-console.log('TIES -----', res[2]);
+
+function start(){
+    //const numPlayers = 1;
+    //const numRounds = 100000; //100000000;
+    //const numDecks = 8;
+    var numPlayers = $("#numPlayers").val();
+    var numRounds = $("#numRounds").val();
+    var numDecks = $("#numDecks").val();
+
+
+    var t0 = performance.now();
+    var res = playRounds(numPlayers,numRounds,getFullDeck(numDecks));
+    var t1 = performance.now();
+    $("#runtime").text((t1 - t0) + " ms");
+
+    var totWins = res[0];
+    var totLoss = res[1];
+    var totTie = res[2];
+
+    console.log('WINS -----', totWins);
+    console.log('LOSS -----', totLoss);
+    console.log('TIES -----', totTie);
+
+    $("#wins").text(totWins);
+    $("#loss").text(totLoss);
+    $("#tie").text(totTie);
+    var percentage = (totWins/(totWins+totLoss)) * 100;
+    $("#percentage").text(percentage + ' %');
+
+}
 
 
 function playRounds(numPlayers, numRounds, deck){
@@ -22,11 +46,12 @@ function playRounds(numPlayers, numRounds, deck){
     var roundsPlayed = 0;
     while(roundsPlayed < numRounds){
         var ndeck = clone(deck);
-        var rscores = score(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
+        var rscores = scorePlayers(play(deal(shuffle(ndeck), createPlayers(numPlayers))));
 
         tscores = sumArrays(tscores,rscores);
-        if(roundsPlayed > 10 && roundsPlayed % outputInterval == 0){
-            console.log(tscores, (tscores[0]/(tscores[0]+tscores[1])) * 100);
+        if(roundsPlayed % 10000 === 0){
+            var percentage = (tscores[0]/(tscores[0]+tscores[1])) * 100;
+            console.log(tscores, percentage);
         }
         roundsPlayed++;
     }
@@ -51,37 +76,59 @@ function getFullDeck(numDecks){
 }
 
 
-function score(players){
+function winScore(player){
+    var score = 1;
+    if(player.doubledDown){
+        score++;
+    }
+    if(player.blackjack === true){
+        score += 0.5;
+    }
+    return score;
+}
+
+
+function loseScore(player){
+    var lscore = 1;
+    if(player.doubledDown){
+        lscore++;
+    }
+    return lscore;
+}
+
+
+function scorePlayer(player, dealerPoints){
+    var points = player.points;
+    var playerScore = [0,0,0];
+    if(points > dealerPoints || player.blackjack === true){
+        playerScore[0] = winScore(player);
+    }else if(points < dealerPoints || points === 0){
+        playerScore[1] = loseScore(player);
+    }else{
+        playerScore[2]++;
+    }
+    return playerScore;
+}
+
+function scorePlayers(players){
     var dealerPoints = players[0].points;
     var scores = [0,0,0];
     for(var i = 1; i < players.length; i++){
-        var player = players[i];
-        var points = player.points;
-        if(points > dealerPoints || player.blackjack == true){
-            scores[0]++;
-            if(player.doubledDown){
-                scores[0]++;
-            }
-            if(player.blackjack === true){
-                scores[0] += .5;
-            }
-        }else if(points < dealerPoints || points == 0){
-            scores[1]++;
-            if(player.doubledDown){
-                scores[1]++;
-            }
-        }else if(points == dealerPoints && points != 0){
-            scores[2]++;
-        }else{
-            scores[1]++;
-            if(player.doubledDown){
-                scores[1]++;
-            }
-        }
+        scores = sumArrays(scores,scorePlayer(players[i],dealerPoints));
     }
     return scores;
 }
 
+function dealerBlackjack(players){
+    return players.map(function(player){
+        if(player.type == "player" && player.points != 21){
+            player.points = 0;
+            return player;
+        }else{
+            return player;
+        }
+    });
+}
 
 function play(game){
     var deck = game[0];
@@ -90,16 +137,9 @@ function play(game){
     var nPlayers = [];
 
     if(dealer.points == 21){
-        nPlayers = players.map(function(player){
-            if(player.type == "player"){
-                player.points = 0;
-                return player;
-            }else{
-                return player;
-            }
-        });
+        nPlayers = dealerBlackjack(players);
     }else{
-        spDeckPly = splitPlayers([deck, players]);
+        var spDeckPly = splitPlayers([deck, players]);
         deck = spDeckPly[0];
         nPlayers = spDeckPly[1];
 
@@ -129,22 +169,21 @@ function splitPlayers(deckPlayers){
     players.map(function(player){
         if(player.canSplit){
             var stratCode = strategize(player, players[0].upcard);
-            if(stratCode == 2){ // do split
+            if(stratCode == 2){
+                player.canSplit = false;
                 var sPlayer = createPlayer();
                 var splitPoints = player.points / 2;
                 sPlayer.points = splitPoints;
                 player.points = splitPoints;
-                var newcard = deck.pop();
-                sPlayer.points += newcard;
-                if(newcard == 11){
-                    sPlayer.acesToUse++;
-                }
-                newcard = deck.pop();
-                player.points += newcard;
-                if(newcard == 11){
-                    player.acesToUse++;
-                }
-                player.canSplit = false;
+
+                var dp = adjustPlayer(1,giveCard(deck, sPlayer));
+                deck = dp[0];
+                sPlayer = dp[1];
+
+                dp = adjustPlayer(1,giveCard(deck, player));
+                deck = dp[0];
+                player = dp[1];
+
                 newPlayers.push(sPlayer);
             }
         }
@@ -154,14 +193,14 @@ function splitPlayers(deckPlayers){
 }
 
 
-function adjustPlayer(i,dp){
-    deck = dp[0];
+function adjustPlayer(round,dp){
+    var deck = dp[0];
     var nPlayer = dp[1];
     var card = dp[2];
-    if(i == 1 && nPlayer.type == 'dealer'){
+    if(round == 1 && nPlayer.type == 'dealer'){
         nPlayer.upcard = card;
     }
-    if(nPlayer.type == "player" && i==1 && card === nPlayer.points / 2){
+    if(round == 1 && nPlayer.type == "player" && card === nPlayer.points / 2){
         nPlayer.canSplit = true;
     }
     return [deck,nPlayer];
@@ -227,7 +266,6 @@ function giveCard(deck, player){
 
 function hit(deck, players, player){
     var stratCode = strategize(player, players[0].upcard);
-    var card = 0;
     var dp = [];
     if(player.type == "player" && stratCode == 3){
         player.doubledDown = true;
@@ -254,7 +292,7 @@ function shouldHit(players, player){
         return player.points < 17 ? true : false;
     }
     var stratCode = strategize(player, players[0].upcard);
-    if(stratCode == 0 || stratCode == 3){
+    if(stratCode === 0 || stratCode === 3){
         return true;
     }
     return false;
@@ -340,7 +378,7 @@ function getSoftStrat(points, upcard){
 
 
 function getHardStrat(points, upcard){
-    const hardStrat = [
+    var hardStrat = [
         [9,9,9,9,9,9,9,9,9,9],
         [9,9,9,9,9,9,9,9,9,9],
         [0,0,0,0,0,0,0,0,0,0],
@@ -368,7 +406,7 @@ function getHardStrat(points, upcard){
 
 
 function getPairStrat(points, upcard){
-    const pairStrat = [
+    var pairStrat = [
         [9,9,9,9,9,9,9,9,9,9],
         [2,2,2,2,2,2,2,2,2,2],
         [9,9,9,9,9,9,9,9,9,9],
