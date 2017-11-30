@@ -35,66 +35,77 @@ html,
             <h2 id="control-543579">BlackJackd Simulator</h2>
           </div>
           <div class="fb-number form-group field-number-1511625514395">
-            <label for="number-1511625514395" class="fb-number-label">Rounds<span class="fb-required">*</span></label>
-            <input style="color:black;width:150px" type="number" class="form-control" name="number-1511625514395" value="1000" min="1" step="1000"
+            <label for="number-1511625514395" class="fb-number-label">Rounds</label>
+            <input style="color:#CCFFFF;background-color:#333333;width:230px" type="number" class="form-control" name="number-1511625514395" value="1000" min="1" step="1000"
               id="numRounds" required="required" aria-required="true">
           </div>
           <div class="fb-number form-group field-number-1511625576634">
-            <label for="number-1511625576634" class="fb-number-label">Players<span class="fb-required">*</span></label>
-            <input style="color:black;width:150px" type="number" class="form-control" name="number-1511625576634" value="1" min="1" step="1"
+            <label for="number-1511625576634" class="fb-number-label">Players</label>
+            <input style="color:#CCFFFF;background-color:#333333;width:230px" type="number" class="form-control" name="number-1511625576634" value="1" min="1" step="1"
               id="numPlayers" required="required" aria-required="true">
           </div>
           <div class="fb-number form-group field-number-1511625633951">
-            <label for="number-1511625633951" class="fb-number-label">Decks<span class="fb-required">*</span></label>
-            <input style="color:black;width:150px" type="number" class="form-control" name="number-1511625633951" value="8" min="1" step="1"
+            <label for="number-1511625633951" class="fb-number-label">Decks</label>
+            <input style="color:#CCFFFF;background-color:#333333;width:230px" type="number" class="form-control" name="number-1511625633951" value="8" min="1" step="1"
               id="numDecks" required="required" aria-required="true">
           </div>
+          <div class="fb-select form-group field-select-1511625725834">
+            <label for="select-1511625633951" class="fb-select-label">Strategy</label>
+            <select type="select" class="form-control" name="select-1511625576634"
+            style="color:#CCFFFF;background-color:#333333;width:230px">
+              <option value="basic">Basic Strategy</option>
+            </select>
+          </div><br>
           <div class="fb-button form-group field-button-1511625725834">
-            <button style="color:black;width:150px" type="button" class="btn btn-success" name="button-1511625725834" style="success"
-              id="btnStart">Run!</button>
+            <button style="color:black;width:230px;background-color:#CCFFFF" type="button" class="btn btn-success"
+            name="button-1511625725834" style="success"
+              id="btnStart">START</button>
           </div>
           <div class="fb-button form-group field-button-1511625725834">
-            <label for="wins" class="fb-number-label">Wins: <span id="wins"></span><br>
-            <label for="loss">Loss: <span id="loss"></span><br><br>
+            <label for="wins" class="fb-number-label">Wins: <span id="wins"></span>&nbsp;&nbsp;
+            <label for="loss">Loss: <span id="loss"></span><br>
+            <label for="percentage">Win %: <span id="percentage"></span><br>
             <label for="runtime">Runtime: <span id="runtime"></span><br>
-            <label for="percentage">Win Percentage: <span id="percentage"></span>
+
           </div>
         </div>
       </form>
       <div id="log" style="max-height: 200px; overflow: auto;"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.1.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script>
-
-
 
     $(function() {
         var worker = new Worker('blackjackWorker.js');
 
+
         worker.addEventListener('message', function(e) {
-          //
-            if(e.data.totWins > 0){
+
+            if(e.data.finished === 1){
                 var totWins = e.data.totWins;
                 var totLoss = e.data.totLoss;
                 var runtime = e.data.runtime;
-                console.log('WINS -----', totWins);
-                console.log('LOSS -----', totLoss);
 
-                $("#wins").text(totWins);
-                $("#loss").text(totLoss);
+                $("#wins").html('<b style="color:#00FFFF">' + totWins + '</b>');
+                $("#loss").html('<b style="color:#00FFFF">' + totLoss + '</b>');
 
-                $("#runtime").text(runtime);
                 var percentage = (totWins/(totWins+totLoss)) * 100;
-                $("#percentage").text(percentage + ' %');
+                $("#percentage").html('<b style="color:#00FFFF">' + percentage + '</b>');
+                $("#btnStart").removeAttr("disabled");
+                $("#btnStart").css({'cursor':"pointer"});
+                $("#btnStart").text("START");
             }else{
                 try{
                     //$("#log").prepend(e.data.tscores[0] + " : " + e.data.tscores[1] + " --- " + e.data.percentage);
                     //$("#log").prepend("<br>");
                     $("#wins").text(e.data.tscores[0]);
                     $("#loss").text(e.data.tscores[1]);
-                    $("#percentage").text(e.data.percentage + ' %');
+                    $("#percentage").text(e.data.percentage);
+                    $("#runtime").text(e.data.runtime);
+
                 }catch(e){
-                   console.log("YO",e)
+                   //console.log("YO",e)
                 }
 
             }
@@ -106,8 +117,11 @@ html,
           selector: '.background', color: '#00FFFF'
         });
         $( "#btnStart" ).click(function() {
+              $(this).attr("disabled", "disabled");
+              $(this).css({'cursor':"default"});
+              $(this).text("RUNNING..");
               $("#runtime").text("");
-
+              profit = 0;
               var workerData = {};
               workerData.numPlayers = $("#numPlayers").val();
               workerData.numRounds = $("#numRounds").val();
