@@ -11,3 +11,5 @@ build an editor for the strategy grids, could be real-time
 brute force array guesser
 
 integrate machine learning
+
+recorder that traces out a line chart (start, stop, pause, resume, etc)
